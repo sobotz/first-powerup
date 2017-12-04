@@ -20,6 +20,7 @@ public class Robot extends IterativeRobot {
 	final String customAuto = "My Auto";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
+	//Driver object
 	private Driver driver;
 
 	/**
@@ -33,7 +34,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Auto choices", chooser);
 		
 		
-	    driver = new Driver(DriveMode.Arcade);
+	    driver = new Driver(DriveMode.ARCADE);
 		
 	}
 
