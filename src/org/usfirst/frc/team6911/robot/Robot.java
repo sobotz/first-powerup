@@ -1,8 +1,12 @@
 package org.usfirst.frc.team6911.robot;
 
+import org.usfirst.frc.team6911.robot.Robotmap.DriveMode;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.SpeedController;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -16,6 +20,7 @@ public class Robot extends IterativeRobot {
 	final String customAuto = "My Auto";
 	String autoSelected;
 	SendableChooser<String> chooser = new SendableChooser<>();
+	private Driver driver;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -26,6 +31,10 @@ public class Robot extends IterativeRobot {
 		chooser.addDefault("Default Auto", defaultAuto);
 		chooser.addObject("My Auto", customAuto);
 		SmartDashboard.putData("Auto choices", chooser);
+		
+		
+	    driver = new Driver(DriveMode.Arcade);
+		
 	}
 
 	/**
@@ -68,6 +77,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		driver.Drive();
 	}
 
 	/**
