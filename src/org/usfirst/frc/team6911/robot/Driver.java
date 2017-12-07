@@ -35,8 +35,8 @@ public class Driver {
 			Driver.setSensitivity(0.7);
 			Driver.setMaxOutput(0.4);
 		}
-		else {
-			//Driver.tankDrive(Robotmap.driverJoystick1,Robotmap.driverJoystick2);
+		else if(driveMode == DriveMode.TANKDRIVE){
+		Driver.tankDrive(Robotmap.driverJoystick,Robotmap.driverJoystick);
 		}
 		
 	}
