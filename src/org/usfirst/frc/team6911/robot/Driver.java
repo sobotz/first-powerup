@@ -23,15 +23,20 @@ public class Driver {
 	
 	
 	public void Drive() {
-		
 		if(driveMode == DriveMode.ARCADE) {
-			
 			Driver.arcadeDrive(Robotmap.driverJoystick);
+			
+			Driver.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
+			Driver.setInvertedMotor(RobotDrive.MotorType.kFrontRight , true);
+			Driver.setInvertedMotor(RobotDrive.MotorType.kRearLeft , true);
+			Driver.setInvertedMotor(RobotDrive.MotorType.kRearRight , true);
+			
+			Driver.setSafetyEnabled(true);
+			Driver.setSensitivity(0.7);
+			Driver.setMaxOutput(0.4);
 		}
 		else {
-			
 			//Driver.tankDrive(Robotmap.driverJoystick1,Robotmap.driverJoystick2);
-
 		}
 		
 	}

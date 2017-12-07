@@ -3,10 +3,8 @@ package org.usfirst.frc.team6911.robot;
 import org.usfirst.frc.team6911.robot.Robotmap.DriveMode;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.SpeedController;
 
 /**
  * The VM is configured to automatically run this class, and to call the
