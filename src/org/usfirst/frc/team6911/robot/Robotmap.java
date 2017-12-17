@@ -17,10 +17,10 @@ public class Robotmap {
 
 	//SpeedController Declaration
 	
-	static SpeedController frontLeftMotor = new Victor(0);
-	static SpeedController rearLeftMotor = new Victor(0);
-	static SpeedController frontRightMotor = new Victor(0);
-	static SpeedController rearRightMotor = new Victor(0);
+        static SpeedController frontLeftMotor = new Victor(4);
+	static SpeedController rearLeftMotor = new Victor(3);
+	static SpeedController frontRightMotor = new Victor(1);
+	static SpeedController rearRightMotor = new Victor(2);
 	
 	//Joy stick Declaration
 	
