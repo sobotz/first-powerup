@@ -10,7 +10,8 @@ public class Robotmap {
 	static enum DriveMode{
 		
 		ARCADE,
-		TANKDRIVE
+		TANKDRIVE,
+		CURVATUREDRIVE
 	}
 	
 	
