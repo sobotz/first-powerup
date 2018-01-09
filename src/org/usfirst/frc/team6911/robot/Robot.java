@@ -76,6 +76,9 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		/*
+		 * The function Drive is called from the class @Driver, Class that handle the robot Motion
+		 */
 		driver.Drive();
 	}
 
@@ -84,6 +87,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic() {
+		
+		driver.OIDebugging();
 	}
 }
 
