@@ -71,6 +71,9 @@ public class Robot extends IterativeRobot {
 			// Put default auto code here
 			break;
 		}
+		
+		driver.automousDrive();
+		
 	}
 
 	/**
