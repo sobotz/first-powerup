@@ -33,6 +33,8 @@ public class Robot extends IterativeRobot {
 		
 		
 	    driver = new Driver(DriveMode.ARCADE);
+	    Robotmap.ultraSonic.setAutomaticMode(true);
+
 		
 	}
 

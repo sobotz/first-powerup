@@ -3,6 +3,7 @@ package org.usfirst.frc.team6911.robot;
 import org.usfirst.frc.team6911.robot.Robotmap.DriveMode;
 
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class Driver {
@@ -62,6 +63,34 @@ public class Driver {
 			}
 			
 	}
+	
+	
+	public void automousDrive() {
+		
+		double distance = Robotmap.ultraSonic.getRangeInches();
+		
+		if(distance > 40.0) {
+			Driver.arcadeDrive(0.5, 0.0);
+			Driver.setSafetyEnabled(true);
+			Driver.setMaxOutput(0.5);
+		}
+		else if(distance < 40.0) {
+			
+			Driver.arcadeDrive(0.3, 0.0);
+			Driver.setSafetyEnabled(true);
+			Driver.setMaxOutput(0.5);
+		}
+		else if(distance < 4){		
+			Driver.arcadeDrive(-0.3, 0.0);
+			Timer.delay(5.0);
+			Driver.stopMotor();
+			Driver.setSafetyEnabled(true);
+			Driver.setMaxOutput(0.5);
+		}
+		
+		
+		
+	}
 		
 	
 		public void OIDebugging() {
@@ -71,7 +100,7 @@ public class Driver {
 			System.out.println("R X AXIS :"+driverJoystick.getRight_X_AXIS());
 			System.out.println("R Y AXIS :"+driverJoystick.getRight_Y_AXIS());
 			System.out.println("Z AXIS :"+driverJoystick.getZ_AXIS());
-			
+			System.out.println("DISTANCE FROM THE NEAREST OBSTACLE :"+Robotmap.ultraSonic.getRangeInches() +"Inches");
 
 			
 
