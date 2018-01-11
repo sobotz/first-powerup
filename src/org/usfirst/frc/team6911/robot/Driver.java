@@ -5,6 +5,7 @@ import org.usfirst.frc.team6911.robot.Robotmap.DriveMode;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Driver {
 	
@@ -22,7 +23,6 @@ public class Driver {
 	private DifferentialDrive Driver;
 	private static OI driverJoystick;
 
-	
     /*
      * To create an instance of this class, it takes An Enumeration Object in parameters, Specifically a Drivemode Enumeration Object in @Robotmap
      * class
@@ -43,6 +43,7 @@ public class Driver {
 		Driver = new DifferentialDrive(m_left, m_right);
 
 		driverJoystick = new OI(Robotmap.driverJoystick);
+		
 
 	}
 
@@ -69,20 +70,20 @@ public class Driver {
 		
 		double distance = Robotmap.ultraSonic.getRangeInches();
 		
-		if(distance > 40.0) {
+		if(distance > 60.0) {
 			Driver.arcadeDrive(0.5, 0.0);
 			Driver.setSafetyEnabled(true);
 			Driver.setMaxOutput(0.5);
 		}
-		else if(distance < 40.0) {
+		else if(distance < 60.0) {
 			
 			Driver.arcadeDrive(0.3, 0.0);
 			Driver.setSafetyEnabled(true);
 			Driver.setMaxOutput(0.5);
 		}
-		else if(distance < 4){		
+		else if(distance < 5){		
 			Driver.arcadeDrive(-0.3, 0.0);
-			Timer.delay(5.0);
+			Timer.delay(2.0);
 			Driver.stopMotor();
 			Driver.setSafetyEnabled(true);
 			Driver.setMaxOutput(0.5);
@@ -94,13 +95,22 @@ public class Driver {
 		
 	
 		public void OIDebugging() {
-			driverJoystick = new OI(Robotmap.driverJoystick);
-			System.out.println("L X AXIS :"+driverJoystick.getLeft_X_AXIS());
-			System.out.println("L Y AXIS :"+driverJoystick.getLeft_Y_AXIS());
-			System.out.println("R X AXIS :"+driverJoystick.getRight_X_AXIS());
-			System.out.println("R Y AXIS :"+driverJoystick.getRight_Y_AXIS());
-			System.out.println("Z AXIS :"+driverJoystick.getZ_AXIS());
-			System.out.println("DISTANCE FROM THE NEAREST OBSTACLE :"+Robotmap.ultraSonic.getRangeInches() +"Inches");
+			//System.out.println("L X AXIS :"+driverJoystick.getLeft_X_AXIS());
+			//System.out.println("L Y AXIS :"+driverJoystick.getLeft_Y_AXIS());
+			//System.out.println("R X AXIS :"+driverJoystick.getRight_X_AXIS());
+			//System.out.println("R Y AXIS :"+driverJoystick.getRight_Y_AXIS());
+			//System.out.println("Z AXIS :"+driverJoystick.getZ_AXIS());
+			
+			
+			 SmartDashboard.putString("DISTANCE FROM THE NEAREST OBSTACLE :",  String.valueOf(Robotmap.ultraSonic.getRangeInches()) +" Inches");
+			
+			 SmartDashboard.putNumber("Left X AXIS", driverJoystick.getLeft_X_AXIS());
+			 SmartDashboard.putNumber("Left Y AXIS", driverJoystick.getLeft_Y_AXIS());
+			 SmartDashboard.putNumber("Right X AXIS", driverJoystick.getRight_X_AXIS());
+			 SmartDashboard.putNumber("Right Y AXIS", driverJoystick.getRight_Y_AXIS());
+			 SmartDashboard.putNumber("Z AXIS", driverJoystick.getZ_AXIS());
+			
+
 
 			
 
