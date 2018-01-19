@@ -41,6 +41,6 @@ public class Robotmap {
 	
 	/////SENSORS DECLARATION ///////
 	static AHRS ahrs = new AHRS(SerialPort.Port.kMXP);
-	static Ultrasonic ultraSonic = new Ultrasonic(1,1);
+	////////////static Ultrasonic ultraSonic = new Ultrasonic(1,1);
 	
 }
