@@ -18,11 +18,13 @@ public class OI {
 	/////////////////////////////////
 
 	double left_Y_AXIS, left_X_AXIS, right_Y_AXIS, right_X_AXIS, Z_AXIS;
-	Boolean A, B, Y, X, leftTopButton, rightTopButton, leftBackButton, rightBackButton;
+	Boolean A, B, Y, X, leftTopButton, rightTopButton;
+	double rightBackButton;
+	double leftBackButton;
 
 	/*
-	 * TO create a new instance of this class it takes in parameter A joystick
-	 * Object (normaly Joysctick Object are declared in the Class @RobotMap)
+	 * TO create a new instance of this class it takes in parameter A Joystick
+	 * Object (normally Joystick Object are declared in the Class @RobotMap)
 	 */
 	public OI(Joystick joystick) {
 
@@ -67,37 +69,37 @@ public class OI {
 	}
 
 	public Boolean getY() {
-		B = Joystick.getRawButton(2);
+		Y = Joystick.getRawButton(4);
 
 		return Y;
 	}
 
 	public Boolean getX() {
-		B = Joystick.getRawButton(2);
+		X = Joystick.getRawButton(3);
 
 		return X;
 	}
 
 	public Boolean getLeftTopButton() {
-		B = Joystick.getRawButton(2);
+		leftTopButton = Joystick.getRawButton(5);
 
 		return leftTopButton;
 	}
 
 	public Boolean getRightTopButton() {
-		B = Joystick.getRawButton(2); 
+		rightTopButton = Joystick.getRawButton(6); 
 
 		return rightTopButton;
 	}
 
-	public Boolean getLeftBackButton() {
-		B = Joystick.getRawButton(2);
+	public double getLtrigger() {
+		leftBackButton = Joystick.getRawAxis(2);
 
 		return leftBackButton;
 	}
 
-	public Boolean getRightBackButton() {
-		B = Joystick.getRawButton(2);
+	public double getRtrigger() {
+		rightBackButton = Joystick.getRawAxis(3);
 		return rightBackButton;
 	}
 

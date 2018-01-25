@@ -5,8 +5,13 @@ import org.usfirst.frc.team6911.robot.Robotmap.DriveMode;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.Spark;
+import edu.wpi.first.wpilibj.SpeedController;
 
-public class Driver {
+
+public class Driver implements PIDOutput {
 	
 	/////// CLASS DESCRIPTION ///////////////
 	/*
@@ -15,13 +20,38 @@ public class Driver {
 	 */
     
 	
-	/*FUll explanatios @ http://first.wpi.edu/FRC/roborio/release/docs/java/ Look for the 
-	 *Look for @DifferentialDrive class documentation
-	 */
+	// Look for differential drive documentation 
+	
 	private static DriveMode driveMode;
 	private static OI driverJoystick;
 	private DifferentialDrive Driver;
+	private SpeedControllerGroup m_left;
+	private SpeedControllerGroup m_right;
+	//Spark motorFL = new Spark(0); // front left controller
+	//Spark motorFR = new Spark(1); // front right controller
+	//Spark motorBL = new Spark(2); // back left controller
+	//Spark motorBR = new Spark(3); // back right controller
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/////////////PID///////////////////////////
+	PIDController GyroPid;
+	private double kP = 0.04;
+	private double kI = 0.0;
+	private double kD = 0.0;
+	private double kF = 0.0;
+	
+	private double kPdeviation;
+	
 
+
+		
     /*
      * To create an instance of this class, it takes An Enumeration Object in parameters, Specifically a Drivemode Enumeration Object in @Robotmap
      * class
@@ -32,8 +62,8 @@ public class Driver {
 	public Driver(DriveMode mdrivemode) {
 		
 		driveMode = mdrivemode;
-		SpeedControllerGroup m_left = new SpeedControllerGroup(Robotmap.frontLeftMotor, Robotmap.rearLeftMotor);
-		SpeedControllerGroup m_right = new SpeedControllerGroup(Robotmap.frontRightMotor, Robotmap.frontRightMotor);
+		m_left = new SpeedControllerGroup(Robotmap.frontLeftMotor, Robotmap.rearLeftMotor);
+		m_right = new SpeedControllerGroup(Robotmap.frontRightMotor, Robotmap.rearRightMotor);
 		
 
 		driverJoystick = new OI(Robotmap.driverJoystick);
@@ -44,15 +74,26 @@ public class Driver {
 
 		Driver = new DifferentialDrive(m_left, m_right);
 		
+		PIDDRIVE();
 
 	}
 	public void Drive() {
+		
+		if(driverJoystick.getLeft_Y_AXIS() <= 0.1 && driverJoystick.getLeft_Y_AXIS() >= -0.1) {
+			SmartDashboard.putBoolean("Moving",false);
+          //  Robotmap.ahrs.zeroYaw();
+
+		}
+		else {
+			SmartDashboard.putBoolean("Moving",true);
+		}
+		
 		if (driveMode == DriveMode.ARCADE) {
-			Driver.arcadeDrive(driverJoystick.getLeft_Y_AXIS(), driverJoystick.getRight_X_AXIS());
+			Driver.arcadeDrive(driverJoystick.getLeft_Y_AXIS(), -driverJoystick.getRight_X_AXIS());
 			Driver.setMaxOutput(0.8);
 		} else if (driveMode == DriveMode.CURVATUREDRIVE) {
-			Driver.curvatureDrive(driverJoystick.getLeft_Y_AXIS(), driverJoystick.getRight_X_AXIS(), true);
-			Driver.setMaxOutput(0.5);
+			Driver.curvatureDrive(driverJoystick.getLeft_Y_AXIS(), -driverJoystick.getRight_X_AXIS(), true);
+			Driver.setMaxOutput(0.7);
 
 		}
 		
@@ -66,41 +107,101 @@ public class Driver {
 	
 	
 	
-/*
-	public void automousDrive() {
+	public void autonomousDrive(double speed) {
+        GyroPid.setSetpoint(0.0f);
+		GyroPid.enable();
+		Driver.arcadeDrive(speed, 0.0);
+		//drive.stopMotor();
+	}
+
+	
+	public void encoders() {
 		
-		double distance = Robotmap.ultraSonic.getRangeInches(); 
+		Robotmap.lEncoder.setMaxPeriod(.1);
+		Robotmap.lEncoder.setMinRate(10);
+		Robotmap.lEncoder.setDistancePerPulse(5);
+		Robotmap.lEncoder.setReverseDirection(true);
+		Robotmap.lEncoder.setSamplesToAverage(7);
+		SmartDashboard.putNumber("Left Encoder", Robotmap.lEncoder.getDistance());
 		
-			Driver.arcadeDrive(-1, 0.0);
-			Driver.setSafetyEnabled(true);			
-			Driver.setMaxOutput(0.5);
+		Robotmap.rEncoder.setMaxPeriod(.1);
+		Robotmap.rEncoder.setMinRate(10);
+		Robotmap.rEncoder.setDistancePerPulse(5);
+		Robotmap.rEncoder.setReverseDirection(true);
+		Robotmap.rEncoder.setSamplesToAverage(7);
+		SmartDashboard.putNumber("Right Encoder", Robotmap.rEncoder.getDistance()*(-1));
+		
+		
+		Robotmap.ultraSonic.setAutomaticMode(true);
+		Robotmap.ultraSonic.setEnabled(true);
+		SmartDashboard.putNumber("Range", Robotmap.ultraSonic.getRangeInches());
+
+		//Robotmap.lEncoder.reset();
+
+	}
+	
+	
+	private void PIDDRIVE() {
+	     GyroPid = new PIDController(kP, kI, kD, kF, Robotmap.ahrs, this);
+	     GyroPid.setInputRange(-180.0f,  180.0f);
+	     GyroPid.setOutputRange(-1.0, 1.0);
+	     GyroPid.setAbsoluteTolerance(4.0);
+	     GyroPid.setContinuous(true);
+	    
+	}
+
+	
+	
+	public void resetYaw() {
+		
+		if(driverJoystick.getA()) {
+		Robotmap.ahrs.zeroYaw();
+		SmartDashboard.putNumber("Trigger", 8886868);
+
+		}
+	}
+	
+	
+	public void resetencoder() {
+		if(driverJoystick.getB()) {
+			
+			Robotmap.lEncoder.reset();
+			Robotmap.rEncoder.reset();
+
+			// Robotmap.rEncoder.reset(); // right encoder
+		}
 		
 	}
-	*/
-	
-	
 		
 	
 		public void OIDebugging() {
 			//System.out.println("L X AXIS :"+driverJoystick.getLeft_X_AXIS());
 			//System.out.println("L Y AXIS :"+driverJoystick.getLeft_Y_AXIS());
-			//System.out.println("R X AXIS :"+driverJoystick.getRight_X_AXIS());
 			//System.out.println("R Y AXIS :"+driverJoystick.getRight_Y_AXIS());
-			//System.out.println("Z AXIS :"+driverJoystick.getZ_AXIS());
+			System.out.println("Z AXIS :"+Robotmap.ahrs.getYaw());
+			//SmartDashboard.putString("DISTANCE FROM THE NEAREST OBSTACLE :",  Robotmap.ultraSonic.getRangeInches() +" Inches");
 			
-			
-			 //SmartDashboard.putString("DISTANCE FROM THE NEAREST OBSTACLE :",  Robotmap.ultraSonic.getRangeInches() +" Inches");
-			
-			 //SmartDashboard.putNumber("Left X AXIS", driverJoystick.getLeft_X_AXIS());
-			// SmartDashboard.putNumber("Left Y AXIS", driverJoystick.getLeft_Y_AXIS());
-			 //SmartDashboard.putNumber("Right X AXIS", driverJoystick.getRight_X_AXIS());
-			 //SmartDashboard.putNumber("Right Y AXIS", driverJoystick.getRight_Y_AXIS());
-			//SmartDashboard.putNumber("ANGLE ", Robotmap.ahrs.getAngle());
-			
+			SmartDashboard.putNumber("Left X AXIS", driverJoystick.getLeft_X_AXIS());
+			SmartDashboard.putNumber("Left Y AXIS", driverJoystick.getLeft_Y_AXIS());
+			SmartDashboard.putNumber("Right X AXIS", driverJoystick.getRight_X_AXIS());
+			SmartDashboard.putNumber("Right Y AXIS", driverJoystick.getRight_Y_AXIS());
+			SmartDashboard.putNumber("YAW  ", Robotmap.ahrs.getYaw());
+			SmartDashboard.putBoolean("Iscalibrated   ", Robotmap.ahrs.isCalibrating());
+			SmartDashboard.putBoolean("isConneted   ", Robotmap.ahrs.isConnected());
 
 
 			
 
 	}
+		
+		
+		////Getting the PID output value
+		@Override
+		public void pidWrite(double output) {
+			// TODO Auto-generated method stub
+			kPdeviation = output;
+			SmartDashboard.putNumber("PID value  ", output);
+
+		}
 
 }
