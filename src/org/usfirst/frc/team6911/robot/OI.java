@@ -32,22 +32,22 @@ public class OI {
 
 	////// Return the value of Y axis on left side of the Joystick
 	public double getLeft_Y_AXIS() {
-		left_Y_AXIS = Joystick.getY(Hand.kLeft);
+		left_Y_AXIS = Joystick.getRawAxis(1);
 		return left_Y_AXIS;
 	}
 
 	public double getLeft_X_AXIS() {
-		left_X_AXIS = Joystick.getX(Hand.kLeft);
+		left_X_AXIS = Joystick.getRawAxis(0);
 		return left_X_AXIS;
 	}
 
 	public double getRight_Y_AXIS() {
-		right_Y_AXIS = Joystick.getY(Hand.kRight);
+		right_Y_AXIS = Joystick.getRawAxis(5);
 		return right_Y_AXIS;
 	}
 
 	public double getRight_X_AXIS() {
-		right_X_AXIS = Joystick.getX(Hand.kRight);
+		right_X_AXIS = Joystick.getRawAxis(4);
 		return right_X_AXIS;
 	}
 
@@ -85,7 +85,7 @@ public class OI {
 	}
 
 	public Boolean getRightTopButton() {
-		B = Joystick.getRawButton(2);
+		B = Joystick.getRawButton(2); 
 
 		return rightTopButton;
 	}

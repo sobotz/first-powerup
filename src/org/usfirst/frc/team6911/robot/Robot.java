@@ -3,6 +3,7 @@ package org.usfirst.frc.team6911.robot;
 import org.usfirst.frc.team6911.robot.Robotmap.DriveMode;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -20,6 +21,8 @@ public class Robot extends IterativeRobot {
 	SendableChooser<String> chooser = new SendableChooser<>();
 	//Driver object
 	private Driver driver;
+	private static OI driverJoystick;
+
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -33,9 +36,10 @@ public class Robot extends IterativeRobot {
 		
 		
 	    driver = new Driver(DriveMode.ARCADE);
-	    Robotmap.ultraSonic.setAutomaticMode(true);
+	   // Robotmap.ultraSonic.setAutomaticMode(true);
+	  //  Robotmap.ultraSonic.setEnabled(true);
+		 SmartDashboard.putNumber("Left X AXIS", driverJoystick.getLeft_X_AXIS());
 
-		
 	}
 
 	/**
@@ -62,17 +66,9 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-		switch (autoSelected) {
-		case customAuto:
-			// Put custom auto code here
-			break;
-		case defaultAuto:
-		default:
-			// Put default auto code here
-			break;
-		}
 		
-		driver.automousDrive();
+		
+	driver.Drive();
 		
 	}
 
@@ -85,6 +81,8 @@ public class Robot extends IterativeRobot {
 		 * The function Drive is called from the class @Driver, Class that handle the robot Motion
 		 */
 		driver.Drive();
+		//driver.OIDebugging();
+		
 	}
 
 	/**
@@ -93,7 +91,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void testPeriodic() {
 		
-		driver.OIDebugging();
+		
 	}
 }
 
