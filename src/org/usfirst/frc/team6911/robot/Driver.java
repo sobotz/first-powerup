@@ -77,12 +77,10 @@ public class Driver implements PIDOutput {
 		PIDDRIVE();
 
 	}
-	public void Drive() {
-		
+	public void Drive() {	
 		if(driverJoystick.getLeft_Y_AXIS() <= 0.1 && driverJoystick.getLeft_Y_AXIS() >= -0.1) {
 			SmartDashboard.putBoolean("Moving",false);
           //  Robotmap.ahrs.zeroYaw();
-
 		}
 		else {
 			SmartDashboard.putBoolean("Moving",true);
@@ -108,9 +106,9 @@ public class Driver implements PIDOutput {
 	
 	
 	public void autonomousDrive(double speed) {
-        GyroPid.setSetpoint(0.0f);
+        GyroPid.setSetpoint(0.0768);
 		GyroPid.enable();
-		Driver.arcadeDrive(speed, 0.0);
+		Driver.arcadeDrive(speed, kPdeviation);
 		//drive.stopMotor();
 	}
 
@@ -119,14 +117,14 @@ public class Driver implements PIDOutput {
 		
 		Robotmap.lEncoder.setMaxPeriod(.1);
 		Robotmap.lEncoder.setMinRate(10);
-		Robotmap.lEncoder.setDistancePerPulse(5);
+		Robotmap.lEncoder.setDistancePerPulse(7);
 		Robotmap.lEncoder.setReverseDirection(true);
 		Robotmap.lEncoder.setSamplesToAverage(7);
 		SmartDashboard.putNumber("Left Encoder", Robotmap.lEncoder.getDistance());
 		
 		Robotmap.rEncoder.setMaxPeriod(.1);
 		Robotmap.rEncoder.setMinRate(10);
-		Robotmap.rEncoder.setDistancePerPulse(5);
+		Robotmap.rEncoder.setDistancePerPulse(7);
 		Robotmap.rEncoder.setReverseDirection(true);
 		Robotmap.rEncoder.setSamplesToAverage(7);
 		SmartDashboard.putNumber("Right Encoder", Robotmap.rEncoder.getDistance()*(-1));
@@ -144,8 +142,8 @@ public class Driver implements PIDOutput {
 	private void PIDDRIVE() {
 	     GyroPid = new PIDController(kP, kI, kD, kF, Robotmap.ahrs, this);
 	     GyroPid.setInputRange(-180.0f,  180.0f);
-	     GyroPid.setOutputRange(-1.0, 1.0);
-	     GyroPid.setAbsoluteTolerance(4.0);
+	     GyroPid.setOutputRange(-7.0, 7.0);
+	     GyroPid.setPercentTolerance(30.0);
 	     GyroPid.setContinuous(true);
 	    
 	}
@@ -156,7 +154,7 @@ public class Driver implements PIDOutput {
 		
 		if(driverJoystick.getA()) {
 		Robotmap.ahrs.zeroYaw();
-		SmartDashboard.putNumber("Trigger", 8886868);
+		//SmartDashboard.putNumber("Trigger", 8886868);
 
 		}
 	}
@@ -178,23 +176,34 @@ public class Driver implements PIDOutput {
 			//System.out.println("L X AXIS :"+driverJoystick.getLeft_X_AXIS());
 			//System.out.println("L Y AXIS :"+driverJoystick.getLeft_Y_AXIS());
 			//System.out.println("R Y AXIS :"+driverJoystick.getRight_Y_AXIS());
-			System.out.println("Z AXIS :"+Robotmap.ahrs.getYaw());
 			//SmartDashboard.putString("DISTANCE FROM THE NEAREST OBSTACLE :",  Robotmap.ultraSonic.getRangeInches() +" Inches");
 			
-			SmartDashboard.putNumber("Left X AXIS", driverJoystick.getLeft_X_AXIS());
 			SmartDashboard.putNumber("Left Y AXIS", driverJoystick.getLeft_Y_AXIS());
 			SmartDashboard.putNumber("Right X AXIS", driverJoystick.getRight_X_AXIS());
-			SmartDashboard.putNumber("Right Y AXIS", driverJoystick.getRight_Y_AXIS());
 			SmartDashboard.putNumber("YAW  ", Robotmap.ahrs.getYaw());
-			SmartDashboard.putBoolean("Iscalibrated   ", Robotmap.ahrs.isCalibrating());
 			SmartDashboard.putBoolean("isConneted   ", Robotmap.ahrs.isConnected());
-
-
-			
-
 	}
 		
 		
+		
+		///////////////This function is can only be used in test mode/////////////////
+		public void GyroPIDtest()
+		{
+			
+			
+			  kP = Ntables.GyroPIDGains("kP");
+			  kI = Ntables.GyroPIDGains("kI");
+			  kD = Ntables.GyroPIDGains("kD");
+			  kF = Ntables.GyroPIDGains("kF");
+			
+			SmartDashboard.putNumber("kP", kP);
+			SmartDashboard.putNumber("kI", kI);
+			SmartDashboard.putNumber("kD", kD);
+				
+			this.autonomousDrive(-0.6);
+
+			
+		}		
 		////Getting the PID output value
 		@Override
 		public void pidWrite(double output) {

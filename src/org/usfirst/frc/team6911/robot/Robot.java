@@ -95,6 +95,9 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic() {
-		Robotmap.rearRightMotor.set(0.4);
+		
+		driver.GyroPIDtest();
+		driver.OIDebugging();
+
 	}
 }
