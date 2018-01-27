@@ -43,8 +43,8 @@ public class Driver implements PIDOutput {
 	/////////////PID///////////////////////////
 	PIDController GyroPid;
 	private double kP = 0.04;
-	private double kI = 0.0;
-	private double kD = 0.0;
+	private double kI = 0.01;
+	private double kD = 0.1;
 	private double kF = 0.0;
 	
 	private double kPdeviation;
@@ -106,9 +106,8 @@ public class Driver implements PIDOutput {
 	
 	
 	public void autonomousDrive(double speed) {
-        GyroPid.setSetpoint(0.0768);
 		GyroPid.enable();
-		Driver.arcadeDrive(speed, kPdeviation);
+		Driver.arcadeDrive(speed, -kPdeviation);
 		//drive.stopMotor();
 	}
 
@@ -143,9 +142,10 @@ public class Driver implements PIDOutput {
 	     GyroPid = new PIDController(kP, kI, kD, kF, Robotmap.ahrs, this);
 	     GyroPid.setInputRange(-180.0f,  180.0f);
 	     GyroPid.setOutputRange(-7.0, 7.0);
-	     GyroPid.setPercentTolerance(30.0);
+	     GyroPid.setAbsoluteTolerance(5.0);
 	     GyroPid.setContinuous(true);
-	    
+	     GyroPid.setSetpoint(0.0);
+
 	}
 
 	
@@ -188,19 +188,23 @@ public class Driver implements PIDOutput {
 		
 		///////////////This function is can only be used in test mode/////////////////
 		public void GyroPIDtest()
+		
+		
+		
 		{
+			  
+			Ntables ntable = new Ntables();
 			
-			
-			  kP = Ntables.GyroPIDGains("kP");
-			  kI = Ntables.GyroPIDGains("kI");
-			  kD = Ntables.GyroPIDGains("kD");
-			  kF = Ntables.GyroPIDGains("kF");
+			  kP = ntable.GyroPIDGains("kP");
+			  kI = ntable.GyroPIDGains("kI");
+			  kD = ntable.GyroPIDGains("kD");
+			  kF = ntable.GyroPIDGains("kF");
 			
 			SmartDashboard.putNumber("kP", kP);
 			SmartDashboard.putNumber("kI", kI);
 			SmartDashboard.putNumber("kD", kD);
 				
-			this.autonomousDrive(-0.6);
+			///this.autonomousDrive(-0.6);
 
 			
 		}		

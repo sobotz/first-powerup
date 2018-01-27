@@ -15,7 +15,7 @@ public class Ntables {
 
 	public Ntables() {
 
-		NetworkTable.getTable("SmartDashboard");
+		tables = NetworkTable.getTable("SmartDashboard");
 
 	}
 
@@ -24,23 +24,23 @@ public class Ntables {
 		double mGain = 0.0;
 		if (gain == "kP") {
 
-			tables.getDouble(String.valueOf(gain), 0.0);
+			tables.getNumber(String.valueOf(gain), 0.0);
 		}
 
 		if (gain == "kI") {
 
-			tables.getDouble(String.valueOf(gain), 0.0);
+			mGain = tables.getNumber(String.valueOf(gain), 1.0);
 		}
 
 		if (gain == "kD") {
 
-			tables.getDouble(String.valueOf(gain), 0.0);
+			mGain = tables.getNumber(String.valueOf(gain), 0.0);
 
 		}
 
 		if (gain == "kF") {
 
-			tables.getDouble(String.valueOf(gain), 0.0);
+			mGain = tables.getNumber(String.valueOf(gain), 0.0);
 
 		}
 		return mGain;
