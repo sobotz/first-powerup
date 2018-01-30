@@ -12,6 +12,7 @@ import org.usfirst.frc.team6911.robot.Robotmap.DriveMode;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -59,7 +60,9 @@ public class Robot extends IterativeRobot {
 		// autoSelected = SmartDashboard.getString("Auto Selector",
 		// defaultAuto);
 		System.out.println("Auto selected: " + m_autoSelected);
+		
 		Robotmap.ahrs.zeroYaw();
+		driver.pidreset();
 	}
 
 	/**
@@ -67,36 +70,49 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-
 		
-		driver.autonomousDrive(-0.6);
+		driver.autonomousDrive(-0.5);
+		//driver.OIDebugging();
+		driver.encoders();
 		driver.OIDebugging();
-		
+		driver.GyroPIDtest();
+
 	}
 
+	
 	/**
 	 * This function is called periodically during operator control.
 	 */
 	@Override
 	public void teleopPeriodic() {
 		driver.Drive();
-		
-
+	
 		driver.OIDebugging();
 		driver.resetYaw();
-		
 		driver.encoders();
 		driver.resetencoder();
+		driver.pidreset();
+		driver.GyroPIDtest();
+
 
 	}
+	
+	
+	@Override
+	public void testInit() {
+		// TODO Auto-generated method stub
+		driver.resetYaw();
+
+	}
+
 
 	/**
 	 * This function is called periodically during test mode.
 	 */
 	@Override
 	public void testPeriodic() {
-		
 		driver.GyroPIDtest();
+		driver.autonomousDrive(-0.5);
 		driver.OIDebugging();
 
 	}

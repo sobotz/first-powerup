@@ -42,9 +42,9 @@ public class Driver implements PIDOutput {
 	
 	/////////////PID///////////////////////////
 	PIDController GyroPid;
-	private double kP = 0.04;
-	private double kI = 0.01;
-	private double kD = 0.1;
+	private double kP = 0.0;
+	private double kI = 0.0;
+	private double kD = 0.00;
 	private double kF = 0.0;
 	
 	private double kPdeviation;
@@ -91,7 +91,7 @@ public class Driver implements PIDOutput {
 			Driver.setMaxOutput(0.8);
 		} else if (driveMode == DriveMode.CURVATUREDRIVE) {
 			Driver.curvatureDrive(driverJoystick.getLeft_Y_AXIS(), -driverJoystick.getRight_X_AXIS(), true);
-			Driver.setMaxOutput(0.7);
+			Driver.setMaxOutput(0.9);
 
 		}
 		
@@ -137,12 +137,17 @@ public class Driver implements PIDOutput {
 
 	}
 	
+	public void pidreset() {
+		GyroPid.disable();
+		GyroPid.reset();
+	}
+	
 	
 	private void PIDDRIVE() {
 	     GyroPid = new PIDController(kP, kI, kD, kF, Robotmap.ahrs, this);
 	     GyroPid.setInputRange(-180.0f,  180.0f);
-	     GyroPid.setOutputRange(-7.0, 7.0);
-	     GyroPid.setAbsoluteTolerance(5.0);
+	     GyroPid.setOutputRange(-9.0, 9.0);
+	     GyroPid.setAbsoluteTolerance(4);
 	     GyroPid.setContinuous(true);
 	     GyroPid.setSetpoint(0.0);
 
@@ -152,7 +157,7 @@ public class Driver implements PIDOutput {
 	
 	public void resetYaw() {
 		
-		if(driverJoystick.getA()) {
+		if(driverJoystick.getX()) {
 		Robotmap.ahrs.zeroYaw();
 		//SmartDashboard.putNumber("Trigger", 8886868);
 
@@ -193,16 +198,18 @@ public class Driver implements PIDOutput {
 		
 		{
 			  
-			Ntables ntable = new Ntables();
 			
-			  kP = ntable.GyroPIDGains("kP");
-			  kI = ntable.GyroPIDGains("kI");
-			  kD = ntable.GyroPIDGains("kD");
-			  kF = ntable.GyroPIDGains("kF");
+			  kP = Table.getNumber("kP", 0.0);
+			  kI = Table.getNumber("kI", 0.0);
+			  kD = Table.getNumber("kD", 0.0);
+			  kF = Table.getNumber("kF", 0.0);
 			
 			SmartDashboard.putNumber("kP", kP);
 			SmartDashboard.putNumber("kI", kI);
 			SmartDashboard.putNumber("kD", kD);
+			SmartDashboard.putNumber("kF", kF);
+			
+			
 				
 			///this.autonomousDrive(-0.6);
 
