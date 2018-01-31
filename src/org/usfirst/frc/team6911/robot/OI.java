@@ -70,13 +70,13 @@ public class OI {
 
 	public Boolean getY() {
 		Y = Joystick.getRawButton(4);
-		// motor spin out for arm
+
 		return Y;
 	}
 
 	public Boolean getX() {
 		X = Joystick.getRawButton(3);
-		// motor spin in for arm
+
 		return X;
 	}
 

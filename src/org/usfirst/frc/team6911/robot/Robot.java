@@ -12,7 +12,6 @@ import org.usfirst.frc.team6911.robot.Robotmap.DriveMode;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -24,21 +23,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends IterativeRobot {
-	private static final String kDefaultAuto = "Default";
-	private static final String kCustomAuto = "My Auto";
-	private String m_autoSelected;
-	private SendableChooser<String> m_chooser = new SendableChooser<>();
-    private Driver driver;
 
+    private Driver driver;
+    
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
 	@Override
 	public void robotInit() {
-		m_chooser.addDefault("Default Auto", kDefaultAuto);
-		m_chooser.addObject("My Auto", kCustomAuto);
-		SmartDashboard.putData("Auto choices", m_chooser);
 		driver = new Driver(DriveMode.CURVATUREDRIVE);
 		
 	}
@@ -56,13 +49,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		m_autoSelected = m_chooser.getSelected();
-		// autoSelected = SmartDashboard.getString("Auto Selector",
-		// defaultAuto);
-		System.out.println("Auto selected: " + m_autoSelected);
-		
-		Robotmap.ahrs.zeroYaw();
-		driver.pidreset();
+		driver.stabilizer();
 	}
 
 	/**
@@ -70,50 +57,43 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
+		driver.autonomousDrive(-0.6, false);
+		driver.Dashboard();
+	}
+	
+	@Override
+	public void teleopInit() {
+		// TODO Auto-generated method stub
 		
-		driver.autonomousDrive(-0.5);
-		//driver.OIDebugging();
-		driver.encoders();
-		driver.OIDebugging();
-		driver.GyroPIDtest();
-
 	}
 
-	
 	/**
 	 * This function is called periodically during operator control.
 	 */
 	@Override
 	public void teleopPeriodic() {
 		driver.Drive();
-	
-		driver.OIDebugging();
+		driver.Dashboard();
+		//driver.encoders();
 		driver.resetYaw();
-		driver.encoders();
 		driver.resetencoder();
-		driver.pidreset();
-		driver.GyroPIDtest();
-
-
 	}
-	
-	
-	@Override
-	public void testInit() {
-		// TODO Auto-generated method stub
-		driver.resetYaw();
-
-	}
-
 
 	/**
 	 * This function is called periodically during test mode.
 	 */
 	@Override
 	public void testPeriodic() {
-		driver.GyroPIDtest();
-		driver.autonomousDrive(-0.5);
-		driver.OIDebugging();
+		
+		
 
 	}
+
+
+
+	
+
+
+	
+	
 }
