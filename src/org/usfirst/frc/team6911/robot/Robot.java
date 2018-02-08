@@ -24,8 +24,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends IterativeRobot {
 
-    private Driver driver;
-    
+	  private Driver driver;
+	  private Lift lift;
+	private SendableChooser<Integer> stationChooser = new SendableChooser<>();
+	private SendableChooser<String> allianceChooser = new SendableChooser<>();
+	private int selectedStation;
+	private String selectedAlliance;
+
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -33,7 +38,20 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 		driver = new Driver(DriveMode.CURVATUREDRIVE);
+		lift = new Lift();
 		
+		allianceChooser.addObject("RED Alliance", "Red");
+		allianceChooser.addObject("BLUE Alliance", "Blue");
+		SmartDashboard.putData("Set alliance", stationChooser);
+
+
+		stationChooser.addDefault("Station 1", 1);
+		stationChooser.addObject("Station 2", 2);
+		stationChooser.addObject("Station 3", 3);
+		SmartDashboard.putData("Select Station", stationChooser);
+
+
+
 	}
 
 	/**
@@ -47,24 +65,36 @@ public class Robot extends IterativeRobot {
 	 * the switch structure below with additional strings. If using the
 	 * SendableChooser make sure to add them to the chooser code above as well.
 	 */
+	@SuppressWarnings("static-access")
 	@Override
 	public void autonomousInit() {
+		selectedStation = stationChooser.getSelected();
+		selectedAlliance = allianceChooser.getSelected();
+		driver.StepsManager(selectedAlliance,selectedStation);
 		driver.stabilizer();
+
 	}
 
 	/**
 	 * This function is called periodically during autonomous.
 	 */
+	@SuppressWarnings("static-access")
 	@Override
 	public void autonomousPeriodic() {
-		driver.autonomousDrive(-0.6, false);
+		driver.autonomousDrive(-0.6);
+
+		driver.Scheduler(selectedAlliance,selectedStation);
+
+
 		driver.Dashboard();
 	}
-	
+
+	@SuppressWarnings("static-access")
 	@Override
 	public void teleopInit() {
 		// TODO Auto-generated method stub
-		
+		driver.stabilizer();
+
 	}
 
 	/**
@@ -73,8 +103,8 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		driver.Drive();
+		lift.liftControl();
 		driver.Dashboard();
-		//driver.encoders();
 		driver.resetYaw();
 		driver.resetencoder();
 	}
@@ -84,16 +114,16 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic() {
-		
-		
+
+
 
 	}
 
 
 
-	
 
 
-	
-	
+
+
+
 }

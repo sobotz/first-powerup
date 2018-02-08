@@ -28,8 +28,8 @@ public class Robotmap {
 	static enum DriveMode {
 		ARCADE, TANKDRIVE, CURVATUREDRIVE
 	}
+	
 
-    //public enum PinType { DigitalIO, PWM, AnalogIn, AnalogOut };
 
 	/*
 	 * SpeedController Declaration
@@ -50,14 +50,24 @@ public class Robotmap {
 	
 	
 	
-
+	///////////////////////LIFT/////////////////////////////////////
+	
+	public static SpeedController liftMotor = new Spark(5);
+    
+	
+	//////////////////////Intake//////////////////////////////////////
+	
+	public static SpeedController inTakeMotor = new Spark(6);
+	
 	//Joystick Declaration
 	static Joystick driverJoystick = new Joystick(0);
+	static Joystick liftController = new Joystick(1);
 	
 	
 	// declare sensors
 	static AHRS ahrs = new AHRS(SPI.Port.kMXP);
 	static Ultrasonic ultraSonic = new Ultrasonic(Navx_extension.getPortextension(0),Navx_extension.getPortextension(9));
+	
 	public static Encoder lEncoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X); ///Not sure that works
 	public static Encoder rEncoder = new Encoder(2, 3, false, Encoder.EncodingType.k4X); ///Not sure that works
 }

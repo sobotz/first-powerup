@@ -1,6 +1,5 @@
 package org.usfirst.frc.team6911.robot;
 
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Joystick;
 
 public class OI {
