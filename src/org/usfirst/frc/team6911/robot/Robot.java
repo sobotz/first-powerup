@@ -37,19 +37,23 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		driver = new Driver(DriveMode.CURVATUREDRIVE);
+		driver = new Driver(DriveMode.ARCADE);
 		lift = new Lift();
 		
 		allianceChooser.addObject("RED Alliance", "Red");
 		allianceChooser.addObject("BLUE Alliance", "Blue");
 		SmartDashboard.putData("Set alliance", stationChooser);
 
+		
 
 		stationChooser.addDefault("Station 1", 1);
 		stationChooser.addObject("Station 2", 2);
 		stationChooser.addObject("Station 3", 3);
 		SmartDashboard.putData("Select Station", stationChooser);
 
+		
+		UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
+        camera.setResolution(640, 480);
 
 
 	}
@@ -72,7 +76,8 @@ public class Robot extends IterativeRobot {
 		selectedAlliance = allianceChooser.getSelected();
 		driver.StepsManager(selectedAlliance,selectedStation);
 		driver.stabilizer();
-
+        
+		//driver.startTimer();
 	}
 
 	/**
@@ -81,9 +86,10 @@ public class Robot extends IterativeRobot {
 	@SuppressWarnings("static-access")
 	@Override
 	public void autonomousPeriodic() {
-		driver.autonomousDrive(-0.6);
-
-		driver.Scheduler(selectedAlliance,selectedStation);
+	driver.DriveTo(120);
+		
+		//driver.autonomousDrive();
+		//driver.Scheduler(selectedAlliance,selectedStation);
 
 
 		driver.Dashboard();
@@ -117,6 +123,12 @@ public class Robot extends IterativeRobot {
 
 
 
+	}
+
+	@Override
+	public void disabledInit() {
+		// TODO Auto-generated method stub
+driver.disablemotor();
 	}
 
 

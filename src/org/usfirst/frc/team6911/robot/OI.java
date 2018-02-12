@@ -1,5 +1,6 @@
 package org.usfirst.frc.team6911.robot;
 
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.Joystick;
 
 public class OI {
@@ -26,9 +27,7 @@ public class OI {
 	 * Object (normally Joystick Object are declared in the Class @RobotMap)
 	 */
 	public OI(Joystick joystick) {
-
-		Joystick = joystick;
-
+		Joystick = joystick;	
 	}
 
 	////// Return the value of Y axis on left side of the Joystick
@@ -69,31 +68,26 @@ public class OI {
 
 	public Boolean getY() {
 		Y = Joystick.getRawButton(4);
-
 		return Y;
 	}
 
 	public Boolean getX() {
 		X = Joystick.getRawButton(3);
-
 		return X;
 	}
 
 	public Boolean getLeftTopButton() {
 		leftTopButton = Joystick.getRawButton(5);
-
 		return leftTopButton;
 	}
 
 	public Boolean getRightTopButton() {
-		rightTopButton = Joystick.getRawButton(6); 
-
+		rightTopButton = Joystick.getRawButton(6);
 		return rightTopButton;
 	}
 
 	public double getLtrigger() {
 		leftBackButton = Joystick.getRawAxis(2);
-
 		return leftBackButton;
 	}
 

@@ -35,17 +35,23 @@ public final class Driver implements PIDOutput {
 	private static PIDController GyroPid;
 	private static double kP = 0.04;
 	private static double kI = 0.0;
-	private static double kD = 0.0;
+	private static double kD = 0.01;
 
 	////////////////// ENCODERS PID Coefficients////////////
 	private static PIDController EncoderPid;
-	private static double ekP = 0.0;
+	private static double ekP = 1;
 	private static double ekI = 0.0;
 	private static double ekD = 0.0;
+	public static EncoderAverage average; 
 
 	//////// PID output//////////////////
 	private static double kPdeviation;//// GyroPID
 	private static double kPspeed;/////// EncoderPID
+	
+	private Timer timer;
+	private DriverStation.Alliance color;
+	private int station;
+
 
 	///////////// Scheduler////////////////////////////////////
 	///////////// Handle the autonomous Paths//////////////////
@@ -78,17 +84,22 @@ public final class Driver implements PIDOutput {
 		m_right.setInverted(true);
 
 		Driver = new DifferentialDrive(m_left, m_right);
+		
+		average = new EncoderAverage();
 
 		/////////Initialization/////////////////
+		driveTrainEncoders();
+
 		GyroPID();
 		
 		EncoderPID();
         
-		driveTrainEncoders();
 
-		gameData = DriverStation.getInstance().getGameSpecificMessage().charAt(0);
+		gameData = "LLL".charAt(0);
 
 		stepPosition = 1;
+		
+		timer = new Timer();
 		
 	}
 
@@ -101,31 +112,38 @@ public final class Driver implements PIDOutput {
 			// SmartDashboard.putBoolean("Moving", true);
 		}
 
-		if (driveMode == DriveMode.ARCADE & driverJoystick.getRtrigger() == 0) {
-			Driver.arcadeDrive(driverJoystick.getLeft_Y_AXIS(), -driverJoystick.getRight_X_AXIS());
+		if (driveMode == DriveMode.ARCADE) {
+			Driver.arcadeDrive(driverJoystick.getLeft_Y_AXIS(), -driverJoystick.getRight_X_AXIS(),false);
 			Driver.setMaxOutput(0.8);
 		} 
 		
-		else if (driveMode == DriveMode.ARCADE & driverJoystick.getRtrigger() != 0) {
-			GyroPid.setSetpoint(0.0f);
-			GyroPid.enable();
-			Driver.arcadeDrive(driverJoystick.getLeft_Y_AXIS(), -kPspeed, false);
-			Driver.setMaxOutput(0.7);
-		}
+	
 
 	}
 
 	/////////// Main function for autonomous Mode/////////////
-	public void autonomousDrive(double speed) {
-		if (!GyroPid.isEnabled()) {
-			GyroPid.enable();
+	public void startTimer() {
+		timer.start();
+		
+		Timer.delay(0.01);
+	}
+	
+	public void autonomousDrive() {
+		if(timer.get() > 0 && timer.get() <= 3.5)//Goes forward for 10 seconds
+		{
+			Driver.arcadeDrive(-0.8,0);
+		}
+		
+		if(timer.get() > 3.5 && timer.get() < 5) {
+			//Goes forward for 10 seconds
+			Driver.stopMotor();
+		}
+		
+		if(timer.get() > 5 && timer.get() < 6) {
+			Driver.arcadeDrive(0.0,-0.5);
 		}
 
-		Driver.arcadeDrive(speed, -kPdeviation);
 
-		SmartDashboard.putNumber("Encoder Average",
-				(Robotmap.rEncoder.getDistance() + Robotmap.lEncoder.getDistance()) / 2);
-//
 	}
 
 	////////// PIDs Instantiation///////////
@@ -133,8 +151,8 @@ public final class Driver implements PIDOutput {
 
 		GyroPid = new PIDController(kP, kI, kD, Robotmap.ahrs, this);
 		GyroPid.setInputRange(-180.0, 180.0);
-		GyroPid.setOutputRange(-1, 1);
-		GyroPid.setPercentTolerance(95.0f);
+		GyroPid.setOutputRange(-0.7, 0.7);
+		GyroPid.setAbsoluteTolerance(1.0f);
 		GyroPid.setContinuous(true);
 	}
 
@@ -149,17 +167,18 @@ public final class Driver implements PIDOutput {
 	//////////////////////////////////////////////////////////////////////////////
 
 	////////////////////// ENCODER PID STUFF//////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////// ////////////////////
 	private void EncoderPID() {
-		EncoderPid = new PIDController(ekP, ekI, ekD, new EncodersAverage(), new EncoderPIDOutput());
-		GyroPid.setOutputRange(-1, 1);
-		GyroPid.setPercentTolerance(99.0f);
-		GyroPid.setContinuous(true);
+		EncoderPid = new PIDController(ekP, ekI, ekD, average, new EncoderPIDOutput());
+		EncoderPid.setInputRange(-5000, 5000);
+		EncoderPid.setOutputRange(-0.6, 0.6);
+		EncoderPid.setAbsoluteTolerance(2.0f);
+		EncoderPid.setContinuous(true);
 	}
     
 	
 	/////////// Inside Class ///////////////////////////////////////////////////
-	private class EncoderPIDOutput implements PIDOutput {
+	public class EncoderPIDOutput implements PIDOutput {
 
 		@Override
 		public void pidWrite(double output) {
@@ -174,36 +193,39 @@ public final class Driver implements PIDOutput {
 
 	}
 
-	private class EncodersAverage implements PIDSource {
-
+	public class EncodersAverage implements PIDSource {
+		PIDSourceType p_source;
 		@Override
 		public double pidGet() {
 			// TODO Auto-generated method stub
-
-			return (6*3.14) *((Robotmap.rEncoder.get()*(-1) + Robotmap.lEncoder.get())/2)/360;
+			SmartDashboard.putNumber("Encoder Average", Math.abs((6*3.14)*(Robotmap.rEncoder.get() + Robotmap.lEncoder.get()/2)/360));	
+			return Math.abs((6*3.14)*(Robotmap.rEncoder.get() + Robotmap.lEncoder.get()/2)/360);
 		}
-
+		
 		@Override
 		public void setPIDSourceType(PIDSourceType pidSource) {
 			// TODO Auto-generated method stub
+			 p_source =	PIDSourceType.kDisplacement;
 		}
 
 		@Override
 		public PIDSourceType getPIDSourceType() {
 			// TODO Auto-generated method stub
-			return null;
+			return p_source;
 		}
 
 	}
 
-	/////////////////////////////////////////////////////////////////////////////
-
+	/////////////////////////////////////////////////
+	
 	//////////// This function handle the range finder///////////////////////////
+	/*
 	public void rangeFinder() {
 		Robotmap.ultraSonic.setAutomaticMode(true);
 		Robotmap.ultraSonic.setEnabled(true);
 		SmartDashboard.putNumber("RangeFinder", Robotmap.ultraSonic.getRangeInches());
 	}
+	*/
 	
 	/////////// Set up the encoders ////////////////////////////////////////////
 	public void driveTrainEncoders() {
@@ -213,7 +235,6 @@ public final class Driver implements PIDOutput {
 	double PPR = 1440;
 	///// Cycle per Revolution/////
 	double CPR = 360;
-
 	////// Distance per Pulse/////
 	double DPP = PPR / CPR;
 
@@ -247,14 +268,12 @@ public final class Driver implements PIDOutput {
 	
 	public static Boolean RotateTo(double angle) {
 		GyroPid.setSetpoint(angle);
-		
-		GyroPid.enable();
-		Driver.arcadeDrive(0.0, -kPdeviation);
-		
 		if (GyroPid.onTarget()) {
 			stabilizer();
 			return goToNextStep = true;
 		} else {
+			GyroPid.enable();
+			Driver.arcadeDrive(0.0, -kPdeviation,false);
 			return goToNextStep = false;
 
 		}
@@ -265,22 +284,46 @@ public final class Driver implements PIDOutput {
 	// we don't use a constant speed, cause if we did we would overshooot (we could miss the set point) the target.
 	// then we use A PID loop that will apply a proportional speed until the set point is reached in this case
 	// until the robot travels the distance wanted 
-	private static Boolean DriveTo(double distance) {
+	public static void DriveTo(double distance) {
 		EncoderPid.setSetpoint(distance);
 		GyroPid.setSetpoint(0.0f);
 		
 			EncoderPid.enable();
 			GyroPid.enable();
 			Driver.arcadeDrive(-kPspeed, -kPdeviation);
-			
-		
-		if (EncoderPid.onTarget()) {
-			stabilizer();
-			return goToNextStep = true;
-		}else {
-			return goToNextStep = false;
-		}
 	}
+	
+	///////////////////////////////////
+	 public Boolean liftUp() {
+		 
+		 Timer timer = new Timer();
+		 timer.start();
+		 
+		 if(timer.get() < 5) {
+			 Robotmap.liftMotor.set(-0.3);
+			 return goToNextStep = false;
+		 }
+		 else {
+			 Robotmap.liftMotor.set(0);
+			 return goToNextStep = true;
+		 }
+		 
+		 
+	 }
+	 
+	 public Boolean rollOut() {
+		 Timer timer = new Timer();
+		 timer.start();
+		 if(timer.get() < 3) {
+			 Robotmap.inTakeMotor.set(-0.3);
+			 return goToNextStep = false;
+		 }
+		 else {
+			 Robotmap.inTakeMotor.set(0);
+			 return goToNextStep = true;
+		 }
+		 
+	 }
 
 	////////////////// Handle autonomous Paths////////////////////////////////////
 
@@ -293,13 +336,11 @@ public final class Driver implements PIDOutput {
 				Steps.put(2, false);
 				Steps.put(3, false);
 			} else if (gameData == 'R') {
-				
 				Steps.put(1, true);
 				Steps.put(2, false);
 				Steps.put(3, false);
 				Steps.put(4, false);
 			}
-
 		}
 		
 		if (mStation == 2) {
@@ -362,7 +403,7 @@ public final class Driver implements PIDOutput {
 
 				}
 
-				if (Steps.get(3)) {
+				if (Steps. get(3)) {
 					DriveTo(60);
 				}
 
@@ -391,16 +432,14 @@ public final class Driver implements PIDOutput {
 		GyroPid.disable();
 		GyroPid.reset();
 		Robotmap.ahrs.zeroYaw();
-		PIDsetCoefficient();
 		GyroPid.setSetpoint(0.0f);
-
+		
+		Robotmap.lEncoder.reset();
+		Robotmap.rEncoder.reset();
 		EncoderPid.disable();
 		EncoderPid.reset();
 		EncoderPid.setSetpoint(0.0f);
-		Robotmap.lEncoder.reset();
-		Robotmap.rEncoder.reset();
-
-		Timer.delay(0.07);
+		Timer.delay(0.04);
 	}
 
 	///////// This function is used to reset the Gyro angle/////////////
@@ -409,7 +448,7 @@ public final class Driver implements PIDOutput {
 			GyroPid.disable();
 			GyroPid.reset();
 			Robotmap.ahrs.zeroYaw();
-			Timer.delay(0.05);
+			Timer.delay(0.01 );
 		}
 	}
 
@@ -431,16 +470,15 @@ public final class Driver implements PIDOutput {
 		SmartDashboard.putBoolean("isMoving   ", Robotmap.ahrs.isMoving());
 		SmartDashboard.putBoolean("isRotating   ", Robotmap.ahrs.isRotating());
 
-		SmartDashboard.putNumber("gkP", kP);
-		SmartDashboard.putNumber("gkI", kI);
-		SmartDashboard.putNumber("gkD", kD);
-
-		SmartDashboard.putNumber("ekP", ekP);
-		SmartDashboard.putNumber("ekI", ekI);
-		SmartDashboard.putNumber("ekD", ekD);
-		
 		SmartDashboard.putNumber("Left encoder", Robotmap.lEncoder.get());
 		SmartDashboard.putNumber("Right encoder", Robotmap.rEncoder.get()*(-1));
+		
+		SmartDashboard.putData("GYRO PID",GyroPid);
+		SmartDashboard.putData("Encoder PID",EncoderPid);
+		
+		SmartDashboard.putNumber("Encoders Average", Math.abs((6*3.14)*(Robotmap.rEncoder.get() + Robotmap.lEncoder.get()/2)/360));	
+
+		
 	}
 
 	/////////////// Those functions are used in test mode to Tune the PID
@@ -456,16 +494,12 @@ public final class Driver implements PIDOutput {
 		ekD = Table.getNumber("ekD", 0);
 		EncoderPid.setPID(ekP, ekI, ekD);
 	}
-
-
-
-	
-	
-	
 	
 	///////// Disable the  motors ////////////////////////////////////////
 	public void disablemotor() {
 
 		Driver.stopMotor();
+		
+		Robotmap.liftMotor.set(0);
 	}
 }
