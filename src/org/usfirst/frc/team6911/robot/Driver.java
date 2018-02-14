@@ -15,13 +15,7 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 
 public final class Driver implements PIDOutput {
 
-	/////// CLASS DESCRIPTION ///////////////
-	/*
-	 * This class handle the robot driving Specifically the function "Drive"
-	 */
-
 	///////////// DRIVETRAIN INSTANCIATION/////////////////
-	private static DriveMode driveMode;
 	private static OI driverJoystick;
 	private static DifferentialDrive Driver;
 	private static SpeedControllerGroup m_left;
@@ -48,14 +42,16 @@ public final class Driver implements PIDOutput {
 	private static double kPspeed;/////// EncoderPID
 
 	private Timer timer;
-	private DriverStation.Alliance color;
+	private static Timer timers = new Timer();
 	private int station;
 
 	///////////// Scheduler////////////////////////////////////
 	///////////// Handle the autonomous Paths//////////////////
 	private static boolean goToNextStep;
+	private static boolean finalStep;
 	private static int stepPosition;
-	static char gameData;
+	private static boolean isRunning = false; 
+	private static char gameData;
 
 	private static HashMap<Integer, Boolean> Steps = new HashMap<Integer, Boolean>();
 
@@ -70,9 +66,8 @@ public final class Driver implements PIDOutput {
 	 * https://wpilib.screenstepslive.com/s/currentCS/m/java/l/599700-getting-your-
 	 * robot-to-drive-with-the-robotdrive-class
 	 */
-	public Driver(DriveMode mdrivemode) {
+	public Driver() {
 
-		driveMode = mdrivemode;
 		m_left = new SpeedControllerGroup(Robotmap.frontLeftMotor, Robotmap.rearLeftMotor);
 		m_right = new SpeedControllerGroup(Robotmap.frontRightMotor, Robotmap.rearRightMotor);
 
@@ -90,8 +85,6 @@ public final class Driver implements PIDOutput {
 
 		EncoderPID();
 
-		gameData = "LLL".charAt(0);
-
 		stepPosition = 1;
 
 		timer = new Timer();
@@ -101,10 +94,9 @@ public final class Driver implements PIDOutput {
 	//// This function allows to drive in teleop MODE//////////////
 	public void Drive() {
 
-		if (driveMode == DriveMode.ARCADE) {
 			Driver.arcadeDrive(driverJoystick.getLeft_Y_AXIS(), -driverJoystick.getRight_X_AXIS(), false);
-			Driver.setMaxOutput(0.8);
-		}
+			Driver.setMaxOutput(0.6);
+		
 
 	}
 
@@ -138,7 +130,7 @@ public final class Driver implements PIDOutput {
 		GyroPid = new PIDController(kP, kI, kD, Robotmap.ahrs, this);
 		GyroPid.setInputRange(-180.0, 180.0);
 		GyroPid.setOutputRange(-0.7, 0.7);
-		GyroPid.setAbsoluteTolerance(1.0f);
+		GyroPid.setAbsoluteTolerance(3.0f);
 		GyroPid.setContinuous(true);
 	}
 
@@ -157,8 +149,8 @@ public final class Driver implements PIDOutput {
 	private void EncoderPID() {
 		EncoderPid = new PIDController(ekP, ekI, ekD, new EncodersAverage(), new EncoderPIDOutput());
 		EncoderPid.setInputRange(-5000, 5000);
-		EncoderPid.setOutputRange(-0.6, 0.6);
-		EncoderPid.setAbsoluteTolerance(2.0f);
+		EncoderPid.setOutputRange(-0.7, 0.7);
+		EncoderPid.setAbsoluteTolerance(6.0f);
 		EncoderPid.setContinuous(true);
 	}
 
@@ -189,9 +181,8 @@ public final class Driver implements PIDOutput {
 		@Override
 		public double pidGet() {
 			// TODO Auto-generated method stub
-			SmartDashboard.putNumber("Encoder Average",
-					Math.abs((6 * 3.14) * (Robotmap.rEncoder.get() + Robotmap.lEncoder.get() / 2) / 360));
-			return Math.abs((6 * 3.14) * (Robotmap.rEncoder.get() + Robotmap.lEncoder.get() / 2) / 360);
+			
+			return ((6 * 3.14) * ((Robotmap.rEncoder.get()*(-1) + Robotmap.lEncoder.get()) / 2)) / 360;
 		}
 
 		@Override
@@ -259,10 +250,10 @@ public final class Driver implements PIDOutput {
 
 	public static Boolean RotateTo(double angle) {
 		GyroPid.setSetpoint(angle);
+		GyroPid.enable();
 		if (GyroPid.onTarget()) {
 			return goToNextStep = true;
 		} else {
-			GyroPid.enable();
 			Driver.arcadeDrive(0.0, -kPdeviation, false);
 			return goToNextStep = false;
 
@@ -279,16 +270,15 @@ public final class Driver implements PIDOutput {
 	public static void DriveTo(double distance) {
 		EncoderPid.setSetpoint(distance);
 		GyroPid.setSetpoint(0.0f);
-
+		
 		EncoderPid.enable();
 		GyroPid.enable();
-		// Driver.arcadeDrive(-kPspeed, -kPdeviation);
 
 		if (EncoderPid.onTarget()) {
-			goToNextStep = false;
+			goToNextStep = true;
 		} else {
 			Driver.arcadeDrive(-kPspeed, -kPdeviation,false);
-
+			goToNextStep = false;
 		}
 	}
 
@@ -296,12 +286,16 @@ public final class Driver implements PIDOutput {
 	public Boolean liftUp() {
 
 		Timer timer = new Timer();
-		timer.start();
+		if(!isRunning) {
+			timers.start();
+		}
 
-		if (timer.get() < 5) {
-			Robotmap.liftMotor.set(-0.3);
+		if (timers.get() < 3) {
+			isRunning = true;
+			Robotmap.liftMotor.set(-0.5);
 			return goToNextStep = false;
 		} else {
+			timers.reset();
 			Robotmap.liftMotor.set(0);
 			return goToNextStep = true;
 		}
@@ -309,27 +303,31 @@ public final class Driver implements PIDOutput {
 	}
 
 	public Boolean rollOut() {
-		Timer timer = new Timer();
-		timer.start();
-		if (timer.get() < 3) {
+		if(!isRunning) {
+			timers.start();
+		}
+		
+		if (timers.get() < 3) {
+			isRunning = true;
 			Robotmap.inTakeMotor.set(-0.3);
 			return goToNextStep = false;
 		} else {
 			Robotmap.inTakeMotor.set(0);
+			timer.stop();
 			return goToNextStep = true;
 		}
 	}
 
 	////////////////// Handle autonomous Paths ////////////////////////////////////
 
-	public void StepsManager(String A, int S) {
+	public void StepsManager(String GD, int S) {
+		
+		gameData = GD.charAt(0);
 		int mStation = S;
-
 		if (mStation == 1) {
 			if (gameData == 'L') {
 				Steps.put(1, true);
 				Steps.put(2, false);
-				Steps.put(3, false);
 			} else if (gameData == 'R') {
 				Steps.put(1, true);
 				Steps.put(2, false);
@@ -373,33 +371,31 @@ public final class Driver implements PIDOutput {
 			Steps.put(stepPosition, false);
             
 			stabilizer();
+			
 			stepPosition = stepPosition + 1;
-            
+			
 			Steps.put(stepPosition, true);
+			
+			if(Steps.size() == stepPosition-1) {
+				finalStep = false;
+			}
 
 		}
 	}
 
-	public static void Scheduler(String A, int S) {
-		// String mSide = A;
+	public static void Scheduler(int S) {
 		int mStation = S;
 
 		if (mStation == 1) {
 
 			if (gameData == 'L') {
 
-				if (Steps.get(1)) {
-
+				if (Steps.get(1) && !finalStep) {
 					DriveTo(120);
 				}
 
-				if (Steps.get(2)) {
+				if (Steps.get(2) && !finalStep) {
 					RotateTo(45.0f);
-
-				}
-
-				if (Steps.get(3)) {
-					DriveTo(60);
 				}
 
 			}
@@ -434,6 +430,9 @@ public final class Driver implements PIDOutput {
 		EncoderPid.disable();
 		EncoderPid.reset();
 		EncoderPid.setSetpoint(0.0f);
+		
+		isRunning = false;
+		stepPosition = 1;
 		Timer.delay(0.04);
 	}
 
@@ -464,6 +463,7 @@ public final class Driver implements PIDOutput {
 		SmartDashboard.putBoolean("isConneted   ", Robotmap.ahrs.isConnected());
 		SmartDashboard.putBoolean("isMoving   ", Robotmap.ahrs.isMoving());
 		SmartDashboard.putBoolean("isRotating   ", Robotmap.ahrs.isRotating());
+		SmartDashboard.putBoolean("onTarget   ", goToNextStep);
 
 		SmartDashboard.putNumber("Left encoder", Robotmap.lEncoder.get());
 		SmartDashboard.putNumber("Right encoder", Robotmap.rEncoder.get() * (-1));
@@ -472,7 +472,7 @@ public final class Driver implements PIDOutput {
 		SmartDashboard.putData("Encoder PID", EncoderPid);
 
 		SmartDashboard.putNumber("Encoders Average",
-				Math.abs((6 * 3.14) * (Robotmap.rEncoder.get() + Robotmap.lEncoder.get() / 2) / 360));
+		  ((6 * 3.14) * ((Robotmap.rEncoder.get()*(-1) + Robotmap.lEncoder.get()) / 2)) / 360);
 
 	}
 

@@ -12,8 +12,6 @@ public class Lift {
  public void liftControl() {
 	 
 	 Robotmap.inTakeMotor.set(liftController.getRight_Y_AXIS());
-	 
-	 //Robotmap.liftMotor.set(liftController.getLeft_Y_AXIS());
 
 	 if(liftController.getRightTopButton()) {
 		 

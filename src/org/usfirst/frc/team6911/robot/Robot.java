@@ -11,6 +11,7 @@ import org.usfirst.frc.team6911.robot.Robotmap.DriveMode;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,9 +28,7 @@ public class Robot extends IterativeRobot {
 	  private Driver driver;
 	  private Lift lift;
 	private SendableChooser<Integer> stationChooser = new SendableChooser<>();
-	private SendableChooser<String> allianceChooser = new SendableChooser<>();
 	private int selectedStation;
-	private String selectedAlliance;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -37,13 +36,8 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		driver = new Driver(DriveMode.ARCADE);
+		driver = new Driver();
 		lift = new Lift();
-		
-		allianceChooser.addObject("RED Alliance", "Red");
-		allianceChooser.addObject("BLUE Alliance", "Blue");
-		SmartDashboard.putData("Set alliance", stationChooser);
-
 		
 
 		stationChooser.addDefault("Station 1", 1);
@@ -51,7 +45,6 @@ public class Robot extends IterativeRobot {
 		stationChooser.addObject("Station 3", 3);
 		SmartDashboard.putData("Select Station", stationChooser);
 
-		
 		UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
         camera.setResolution(640, 480);
 
@@ -73,8 +66,8 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		selectedStation = stationChooser.getSelected();
-		selectedAlliance = allianceChooser.getSelected();
-		driver.StepsManager(selectedAlliance,selectedStation);
+		driver.StepsManager(DriverStation.getInstance().getGameSpecificMessage(), selectedStation);
+		
 		driver.stabilizer();
         
 		//driver.startTimer();
@@ -86,10 +79,13 @@ public class Robot extends IterativeRobot {
 	@SuppressWarnings("static-access")
 	@Override
 	public void autonomousPeriodic() {
-	driver.DriveTo(120);
+	//driver.DriveTo(144);
 		
+	//driver.RotateTo(45.0f);
+	
+	//driver.rollOut();
 		//driver.autonomousDrive();
-		//driver.Scheduler(selectedAlliance,selectedStation);
+	driver.Scheduler(selectedStation);
 
 
 		driver.Dashboard();
