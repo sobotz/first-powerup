@@ -7,6 +7,7 @@
 
 package org.usfirst.frc.team6911.robot;
 
+import org.usfirst.frc.team6911.robot.Driver.EncodersAverage;
 import org.usfirst.frc.team6911.robot.Robotmap.DriveMode;
 
 import edu.wpi.cscore.UsbCamera;
@@ -28,7 +29,9 @@ public class Robot extends IterativeRobot {
 	  private Driver driver;
 	  private Lift lift;
 	private SendableChooser<Integer> stationChooser = new SendableChooser<>();
+	private SendableChooser<String> switchORScaleChooser = new SendableChooser<>();
 	private int selectedStation;
+	private String switchORScale;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -39,14 +42,16 @@ public class Robot extends IterativeRobot {
 		driver = new Driver();
 		lift = new Lift();
 		
+		switchORScaleChooser.addObject("RED Alliance", "switch");
+		switchORScaleChooser.addObject("BLUE Alliance", "scale");
+		SmartDashboard.putData("Set alliance", switchORScaleChooser);
+
 
 		stationChooser.addDefault("Station 1", 1);
 		stationChooser.addObject("Station 2", 2);
 		stationChooser.addObject("Station 3", 3);
 		SmartDashboard.putData("Select Station", stationChooser);
 
-		UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
-        camera.setResolution(640, 480);
 
 
 	}
@@ -66,11 +71,10 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		selectedStation = stationChooser.getSelected();
-		driver.StepsManager(DriverStation.getInstance().getGameSpecificMessage(), selectedStation);
-		
+		switchORScale = switchORScaleChooser.getSelected();
+		driver.StepsManager(switchORScale, DriverStation.getInstance().getGameSpecificMessage(),selectedStation);
 		driver.stabilizer();
-        
-		//driver.startTimer();
+
 	}
 
 	/**
@@ -79,14 +83,9 @@ public class Robot extends IterativeRobot {
 	@SuppressWarnings("static-access")
 	@Override
 	public void autonomousPeriodic() {
-	//driver.DriveTo(144);
-		
-	//driver.RotateTo(45.0f);
-	
-	//driver.rollOut();
-		//driver.autonomousDrive();
-	driver.Scheduler(selectedStation);
+		driver.autonomousDrive();
 
+		driver.Scheduler();
 
 		driver.Dashboard();
 	}
@@ -96,7 +95,6 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		// TODO Auto-generated method stub
 		driver.stabilizer();
-
 	}
 
 	/**
@@ -119,12 +117,6 @@ public class Robot extends IterativeRobot {
 
 
 
-	}
-
-	@Override
-	public void disabledInit() {
-		// TODO Auto-generated method stub
-driver.disablemotor();
 	}
 
 

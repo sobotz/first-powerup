@@ -44,6 +44,8 @@ public final class Driver implements PIDOutput {
 	private Timer timer;
 	private static Timer timers = new Timer();
 	private int station;
+	
+	private static int mStation;
 
 	///////////// Scheduler////////////////////////////////////
 	///////////// Handle the autonomous Paths//////////////////
@@ -285,7 +287,6 @@ public final class Driver implements PIDOutput {
 	///////////////////////////////////
 	public Boolean liftUp() {
 
-		Timer timer = new Timer();
 		if(!isRunning) {
 			timers.start();
 		}
@@ -320,11 +321,14 @@ public final class Driver implements PIDOutput {
 
 	////////////////// Handle autonomous Paths ////////////////////////////////////
 
-	public void StepsManager(String GD, int S) {
+	public void StepsManager(String switchOrScale, String GD,int S) {
 		
+		if(switchOrScale == "switch"){
+			
 		gameData = GD.charAt(0);
-		int mStation = S;
+		 mStation = S;
 		if (mStation == 1) {
+			
 			if (gameData == 'L') {
 				Steps.put(1, true);
 				Steps.put(2, false);
@@ -364,6 +368,11 @@ public final class Driver implements PIDOutput {
 				Steps.put(4, false);
 			}
 		}
+		}
+		
+		if(switchOrScale == "scale"){
+
+	}
 	}
 
 	public static void StepPositionManager() {
@@ -383,8 +392,7 @@ public final class Driver implements PIDOutput {
 		}
 	}
 
-	public static void Scheduler(int S) {
-		int mStation = S;
+	public static void Scheduler() {
 
 		if (mStation == 1) {
 
