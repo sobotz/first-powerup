@@ -110,19 +110,125 @@ public final class Driver implements PIDOutput {
 	}
 
 	public void autonomousDrive() {
-		if (timer.get() > 0 && timer.get() <= 3.5)// Goes forward for 10 seconds
-		{
-			Driver.arcadeDrive(-0.8, 0);
+		///////////Simple Straight and Lift(15 seconds)///////////
+		if(timer.get()>0 && timer.get()<=7){			//Goes forward for 10 seconds
+			Driver.arcadeDrive(0.3,0);
 		}
-
-		if (timer.get() > 3.5 && timer.get() < 5) {
-			// Goes forward for 10 seconds
+		
+		if(timer.get()>7 && timer.get<=10){
+			Driver.stopMotor();				//Stops driving
+		}
+		
+		if(timer.get()>10 && timer.get()<=12){
+			Robotmap.liftMotor.set(0.5);			//lift goes up
+		}
+		
+		if(timer.get()>12 && timer.get()<=13){
+			Robotmap.liftMotor.set(0);			//Stop the lift motor
+		}
+		
+		if(timer.get()>13 && timer.get()<=14){
+			Robotmap.inTakeA.set(-1);			//Starts intake motor-launches power cube
+		}
+		
+		if(timer.get()>14 && timer.get()<=15){
+			Robotmap.inTakeA.set(0);			//Stop the intake motor
+		}
+		
+		///////////DRIVERSTATION 1///////////
+		if(timer.get()>0 && timer.get() <= 1){	     		//.428575(s)- .5(s) interval
+			Driver.arcadeDrive(0.3, 0);
+		}
+		if(timer.get()>1 && timer.get()<=1.75)
 			Driver.stopMotor();
+		if(timer.get() > 1.75 && timer.get() <= 2.75){		//.5(s)- .5(s) interval
+			Driver.tankDrive(-0.3,0.3);
 		}
+		if(timer.get()>2.75 && timer.get()<=3.5)
+			Driver.stopMotor();
+		if(timer.get() > 3.5 && timer.get() <= 6.5){		//.85714(s)- .5(s) interval
+			Driver.arcadeDrive(0.3, 0);
+		}
+		if(timer.get()>6.5 && timer.get() <= 7.25)
+			Driver.stopMotor();
+		if(timer.get() > 7.25 && timer.get() <= 8.25){		//.5(s)- .5(s) interval
+			Driver.tankDrive(0.3,-0.3);				
+		}
+		if(timer.get()>8.25 && timer.get()<=9)
+          		Driver.stopMotor();
+		if(timer.get() > 9 && timer.get() <= 11){		//5.0(s)- .5(s) interval
+			Driver.arcadeDrive(0.3, 0);
+		}
+		if(timer.get()>11 && timer.get() <= 11.75)
+			Driver.stopMotor();
+          	if(timer.get() > 11.75 && timer.get() <= 12.5){		//.5(s)- no interval
+			Driver.tankDrive(-0.3,0.3);
+		}
+		if(timer.get()>12.5 && timer.get() <= 13)
+			Driver.stopMotor();
+		if(timer.get()>13 && timer.get() <= 13.5)
+			Robotmap.liftMotor.set(0.5);			//lift goes up
+		if(timer.get()>13.5 && timer.get() <= 14.5)
+			Robotmap.inTakeA.set(-1);			//Starts intake motor-launches power cube
+		if(timer.get()>14.5 && timer.get() <= 15)
+			Robotmap.inTakeA.set(0);
+		
+		///////////DRIVERSTATION 2///////////
+		//All it does is cross the line
+		if(timer.get()>0 && timer.get()<=7){			//Goes forward for 10 seconds
+			Driver.arcadeDrive(0.3,0);
+		}
+		
+		if(timer.get()>7 && timer.get<=10){
+			Driver.stopMotor();				//Stops driving
+		}
+		
+		///////////DRIVERSTATION 3///////////
+		if(timer.get()>0 && timer.get() <= 1)	     		//.428575(s)- .5(s) interval
+			Driver.arcadeDrive(0.3, 0);
+		
+		if(timer.get()>1 && timer.get()<=1.75)
+			Driver.stopMotor();
+		
+		if(timer.get() > 1.75 && timer.get() <= 2.75)		//.5(s)- .5(s) interval
+			Driver.tankDrive(0.3,-0.3);
+		
+		if(timer.get()>2.75 && timer.get()<=3.5)
+			Driver.stopMotor();
+		
+		if(timer.get() > 3.5 && timer.get() <= 6.5)		//.85714(s)- .5(s) interval
+			Driver.arcadeDrive(0.3, 0);
+		
+		if(timer.get()>6.5 && timer.get() <= 7.25)
+			Driver.stopMotor();
+		
+		if(timer.get() > 7.25 && timer.get() <= 8.25)		//.5(s)- .5(s) interval
+			Driver.tankDrive(-0.3,0.3);
+		
+		if(timer.get()>8.25 && timer.get()<=9)
+      Driver.stopMotor();
+		
+		if(timer.get() > 9 && timer.get() <= 11)		//5.0(s)- .5(s) interval
+			Driver.arcadeDrive(0.3, 0);
+		
+		if(timer.get()>11 && timer.get() <= 11.75)
+			Driver.stopMotor();
+      
+		if(timer.get() > 11.75 && timer.get() <= 12.5)		//.5(s)- no interval
+			Driver.tankDrive(0.3,-0.3);
+      
+		if(timer.get()>12.5 && timer.get() <= 13)
+			Driver.stopMotor();
+		
+		if(timer.get()>13 && timer.get() <= 13.5)
+			Robotmap.liftMotor.set(0.5);			//lift goes up
+		
+		if(timer.get()>13.5 && timer.get() <= 14.5)
+			Robotmap.inTakeA.set(-1);			//Starts intake motor-launches power cube
+		
+		if(timer.get()>14.5 && timer.get() <= 15)
+			Robotmap.inTakeA.set(0);			//Stops intake motor
 
-		if (timer.get() > 5 && timer.get() < 6) {
-			Driver.arcadeDrive(0.0, -0.5);
-		}
 
 	}
 
