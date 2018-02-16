@@ -30,6 +30,8 @@ public final class Driver implements PIDOutput {
 	private static double kP = 0.04;
 	private static double kI = 0.0;
 	private static double kD = 0.01;
+	private static boolean teleopStraight = false;
+	private static boolean stabilizerinit = true;
 
 	////////////////// ENCODERS PID Coefficients////////////
 	private static PIDController EncoderPid;
@@ -97,9 +99,31 @@ public final class Driver implements PIDOutput {
 
 	//// This function allows to drive in teleop MODE//////////////
 	public void Drive() {
-
+        
+		
 		Driver.arcadeDrive(driverJoystick.getLeft_Y_AXIS(), -driverJoystick.getRight_X_AXIS(), false);
 		Driver.setMaxOutput(0.6);
+		
+		if(driverJoystick.getRightTopButton()) {
+			 if(!teleopStraight) {
+				 GyroPid.setSetpoint(0.0f);
+				 GyroPid.enable();
+			 }
+			 teleopStraight = true;
+			 stabilizerinit = false;
+			Driver.arcadeDrive(driverJoystick.getLeft_Y_AXIS(), -kPdeviation, false);
+
+		}
+		
+		if(!driverJoystick.getRightTopButton()) {
+			if(!stabilizerinit) {
+			 if(teleopStraight) {
+				 stabilizer();
+				 teleopStraight = false;
+				 stabilizerinit = true;
+			 }
+			}
+		}
 
 	}
 
@@ -109,6 +133,7 @@ public final class Driver implements PIDOutput {
 		}
 	
 	 public void autonomousDrive() { 
+		 /*
 		 	///////////Test 1///////////
    if(timer.get()>0 && timer.get() <= 1){	     		//goes at 50% speed for 1 second(30")
 			Driver.arcadeDrive(-0.5, 0);
