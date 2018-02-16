@@ -27,17 +27,17 @@ public final class Driver implements PIDOutput {
 
 	////////////////// GYRO PID Coefficients////////////////
 	private static PIDController GyroPid;
-	private static double kP = 0.04;
+	private static double kP = 0.07;
 	private static double kI = 0.0;
-	private static double kD = 0.01;
+	private static double kD = 0.02;
 	private static boolean teleopStraight = false;
-	private static boolean stabilizerinit = true;
+	private static boolean stabilizerinit = false;
 
 	////////////////// ENCODERS PID Coefficients////////////
 	private static PIDController EncoderPid;
-	private static double ekP = 1;
+	private static double ekP = 0.06;
 	private static double ekI = 0.0;
-	private static double ekD = 0.0;
+	private static double ekD = 0.03;
 
 	//////// PID output//////////////////
 	private static double kPdeviation;//// GyroPID
@@ -102,7 +102,7 @@ public final class Driver implements PIDOutput {
         
 		
 		Driver.arcadeDrive(driverJoystick.getLeft_Y_AXIS(), -driverJoystick.getRight_X_AXIS(), false);
-		Driver.setMaxOutput(0.6);
+		Driver.setMaxOutput(0.6); // set to 0.6
 		
 		if(driverJoystick.getRightTopButton()) {
 			 if(!teleopStraight) {
@@ -110,17 +110,17 @@ public final class Driver implements PIDOutput {
 				 GyroPid.enable();
 			 }
 			 teleopStraight = true;
-			 stabilizerinit = false;
+			 stabilizerinit = true;
 			Driver.arcadeDrive(driverJoystick.getLeft_Y_AXIS(), -kPdeviation, false);
 
 		}
 		
 		if(!driverJoystick.getRightTopButton()) {
-			if(!stabilizerinit) {
+			if(stabilizerinit) {
 			 if(teleopStraight) {
 				 stabilizer();
 				 teleopStraight = false;
-				 stabilizerinit = true;
+				 stabilizerinit = false;
 			 }
 			}
 		}
@@ -133,13 +133,27 @@ public final class Driver implements PIDOutput {
 		}
 	
 	 public void autonomousDrive() { 
+		 if(timer.get() > 0 & timer.get() < .6){		    //turns counterclockwise at 60% speed for .6 seconds(45 degree turn)
+				Driver.tankDrive(-0.6,0.6);
+			}
+			if(timer.get()>.6 && timer.get()< 4)
+				Driver.stopMotor();
+	 }
+		  /*
+		 if(timer.get() > 0 & timer.get() < 1){		    //turns counterclockwise at 60% speed for 1 seconds(90 degree turn)
+				Driver.tankDrive(-0.6,0.6);
+			}
+			if(timer.get()>1 && timer.get()< 4)
+				Driver.stopMotor();
+	 }
 		 /*
 		 	///////////Test 1///////////
-   if(timer.get()>0 && timer.get() <= 1){	     		//goes at 50% speed for 1 second(30")
-			Driver.arcadeDrive(-0.5, 0);
-		}
-		if(timer.get()>1 && timer.get()<=1.75)
-			Driver.stopMotor();
+		 if(timer.get()>0 && timer.get() < 5){	     		//goes at 60% speed for 5 second(13ft)(2.6ftpersec)(31.2"persec  )
+				Driver.arcadeDrive(-0.6, 0);
+			}
+			if(timer.get()>5 && timer.get()< 7)
+				Driver.stopMotor();
+	 }
 	 /* ///////////Simple Straight and Lift(15
 	 * seconds)/////////// if(timer.get()>0 && timer.get()<=7){ //Goes forward for
 	 * 10 seconds Driver.arcadeDrive(0.3,0); }
@@ -221,7 +235,7 @@ public final class Driver implements PIDOutput {
 	 * 
 	 * if(timer.get()>14.5 && timer.get() <= 15) Robotmap.inTakeA.set(0); //Stops
 	 *intake motor 
-	 */ }
+	 */ 
 	////////// PIDs Instantiation///////////
 	private void GyroPID() {
 
