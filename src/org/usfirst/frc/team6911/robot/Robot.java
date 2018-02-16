@@ -74,6 +74,8 @@ public class Robot extends IterativeRobot {
 		switchORScale = switchORScaleChooser.getSelected();
 		driver.StepsManager(switchORScale, DriverStation.getInstance().getGameSpecificMessage(),selectedStation);
 		driver.stabilizer();
+		
+		driver.startTimer();
 
 	}
 
@@ -82,10 +84,12 @@ public class Robot extends IterativeRobot {
 	 */
 	@SuppressWarnings("static-access")
 	@Override
+	
+	
 	public void autonomousPeriodic() {
 		driver.autonomousDrive();
 
-		driver.Scheduler();
+		//driver.Scheduler();
 
 		driver.Dashboard();
 	}
