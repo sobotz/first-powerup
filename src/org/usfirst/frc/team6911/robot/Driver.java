@@ -158,7 +158,19 @@ public final class Driver implements PIDOutput {
 			if(timer.get()> 3.75 && timer.get() < 5) {
 				Robotmap.inTakeMotor.set(0);
 			}
-		 
+		
+		 /////////////A21///////////////
+		 	if(timer.get()>0 && timer.get() < 2.367){	     		//STEP 1
+				Driver.arcadeDrive(-0.6, 0,false);
+			}
+			if(timer.get()>2.367 && timer.get()<3.367) 
+				Driver.stopMotor();
+			if(timer.get() > 3.367 && timer.get() < 3.867){			//STEP 2
+				Driver.tankDrive(-0.6,0.6);
+			}
+		 	if(timer.get()>3.867 && timer.get()<.0474){
+				Driver.arcadeDrive(0.6,0, false);
+			//lift code goes here
 		  /////////////C12///////////////
 		 	if(timer.get()>0 && timer.get() < 1.5){	     		//STEP 1
 				Driver.arcadeDrive(-0.6, 0,false);
@@ -184,14 +196,62 @@ public final class Driver implements PIDOutput {
 			if(timer.get()> 3.75 && timer.get() < 5) {
 				Robotmap.inTakeMotor.set(0);
 			}
-		 /////////////B-Autoline///////////////
+				
+		/////////////C22///////////////
+		 	if(timer.get()>0 && timer.get() < 2.367){	     		//STEP 1
+				Driver.arcadeDrive(-0.6, 0,false);
+			}
+			if(timer.get()>2.367 && timer.get()<3.367) 
+				Driver.stopMotor();
+			if(timer.get() > 3.367 && timer.get() < 3.867){			//STEP 2
+				Driver.tankDrive(0.6,-0.6);
+			}
+		 	if(timer.get()>3.867 && timer.get()<.0474){
+				Driver.arcadeDrive(0.6,0, false);
+			//lift code goes here
+				
+		 /////////////Autoline///////////////
 		 	if(timer.get()>0 && timer.get() < .711){	     		//STEP 1
 				Driver.arcadeDrive(-0.6, 0,false);
 			}
 			if(timer.get()>.711 && timer.get()<2) 
 				Driver.stopMotor();
-		 	
-		 
+				
+		 /////////////B11///////////////
+			if(timer.get()>0 && timer.get() < .205)	     			//STEP 1
+				Driver.arcadeDrive(-0.6, 0,false);
+			if(timer.get()>.205 && timer.get()<1) 
+				Driver.stopMotor();
+			if(timer.get() > 1 && timer.get() < 1.5)			//STEP 2
+				Driver.tankDrive(0.6,-0.6);
+			if(timer.get()>1.5 && timer.get() < 2.08)	     		//STEP 1
+				Driver.arcadeDrive(-0.6, 0,false);
+			if(timer.get()>2.08 && timer.get()<3) 
+				Driver.stopMotor();
+			if(timer.get() > 3 && timer.get() < 3.5)			//STEP 2
+				Driver.tankDrive(-0.6,0.6);
+			if(timer.get()>3.5 && timer.get()<4.14)
+				Driver.arcadeDrive(-0.6,0,false);
+			if(timer.get()>4.14 && timer.get()<5) 
+				Driver.stopMotor();
+				
+		/////////////B12///////////////
+			if(timer.get()>0 && timer.get()<0.205)	     			//STEP 1
+				Driver.arcadeDrive(-0.6, 0,false);
+			if(timer.get()>0.205 && timer.get()<1) 
+				Driver.stopMotor();
+			if(timer.get()>1 && timer.get()<1.5)			//STEP 2
+				Driver.tankDrive(-0.6,0.6);
+			if(timer.get()>1.5 && timer.get()<1.803)
+				Driver.arcadeDrive(-0.6,0,false);
+			if(timer.get()>1.803 && timer.get()<3)
+				Driver.stopMotor();
+			if(timer.get()>3 && timer.get()<3.5)
+				Driver.tankDrive(0.6,-0.6);
+			if(timer.get()>3.5 && timer.get()<4.14)
+				Driver.arcadeDrive(-0.6,0,false);
+			if(timer.get()>4.14 && timer.get()<5) 
+				Driver.stopMotor();
 	 }
 		 /*
 		 if(timer.get()>0 && timer.get() < 0.833){	     		//STEP 1
