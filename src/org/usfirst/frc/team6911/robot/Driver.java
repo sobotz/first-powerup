@@ -133,6 +133,7 @@ public final class Driver implements PIDOutput {
 		}
 	
 	 public void autonomousDrive() { 
+		 /////////////A11///////////////
 		 	if(timer.get()>0 && timer.get() < 1.5){	     		//STEP 1
 				Driver.arcadeDrive(-0.6, 0,false);
 			}
@@ -157,6 +158,40 @@ public final class Driver implements PIDOutput {
 			if(timer.get()> 3.75 && timer.get() < 5) {
 				Robotmap.inTakeMotor.set(0);
 			}
+		 
+		  /////////////C12///////////////
+		 	if(timer.get()>0 && timer.get() < 1.5){	     		//STEP 1
+				Driver.arcadeDrive(-0.6, 0,false);
+			}
+			if(timer.get()>1.5 && timer.get()<2.5) 
+				Driver.stopMotor();
+			if(timer.get() > 2.5 && timer.get() < 3){			//STEP 2
+				Driver.tankDrive(0.6,-0.6);
+			}
+			/*if(timer.get() > 3 && timer.get() < 3.34 ){			//STEP 3
+				Driver.arcadeDrive(-0.6, 0,false);
+			}*/ //replace lift launch
+			/*if(timer.get() > 3 && timer.get() < 9 ){			//STEP 3
+				Robotmap.liftMotor.set(-0.6);
+			}*/
+			if(timer.get() > 3 && timer.get() < 3.1) { // for lift starting down uncomment above and  at 
+				//Robotmap.liftMotor.set(0);
+				Driver.arcadeDrive(-0.6, 0,false);
+			}
+			if(timer.get()> 3.05 && timer.get() < 3.75) {
+				Robotmap.inTakeMotor.set(-1);
+			}
+			if(timer.get()> 3.75 && timer.get() < 5) {
+				Robotmap.inTakeMotor.set(0);
+			}
+		 /////////////B-Autoline///////////////
+		 	if(timer.get()>0 && timer.get() < .711){	     		//STEP 1
+				Driver.arcadeDrive(-0.6, 0,false);
+			}
+			if(timer.get()>.711 && timer.get()<2) 
+				Driver.stopMotor();
+		 	
+		 
 	 }
 		 /*
 		 if(timer.get()>0 && timer.get() < 0.833){	     		//STEP 1
