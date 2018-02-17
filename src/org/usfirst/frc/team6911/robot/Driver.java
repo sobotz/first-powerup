@@ -133,6 +133,87 @@ public final class Driver implements PIDOutput {
 		}
 	
 	 public void autonomousDrive() { 
+		 	if(timer.get()>0 && timer.get() < 1.5){	     		//STEP 1
+				Driver.arcadeDrive(-0.6, 0,false);
+			}
+			if(timer.get()>1.5 && timer.get()<2.5) 
+				Driver.stopMotor();
+			if(timer.get() > 2.5 && timer.get() < 3){			//STEP 2
+				Driver.tankDrive(-0.6,0.6);
+			}
+			/*if(timer.get() > 3 && timer.get() < 3.34 ){			//STEP 3
+				Driver.arcadeDrive(-0.6, 0,false);
+			}*/ //replace lift launch
+			/*if(timer.get() > 3 && timer.get() < 9 ){			//STEP 3
+				Robotmap.liftMotor.set(-0.6);
+			}*/
+			if(timer.get() > 3 && timer.get() < 3.1) { // for lift starting down uncomment above and  at 
+				//Robotmap.liftMotor.set(0);
+				Driver.arcadeDrive(-0.6, 0,false);
+			}
+			if(timer.get()> 3.05 && timer.get() < 3.75) {
+				Robotmap.inTakeMotor.set(-1);
+			}
+			if(timer.get()> 3.75 && timer.get() < 5) {
+				Robotmap.inTakeMotor.set(0);
+			}
+	 }
+		 /*
+		 if(timer.get()>0 && timer.get() < 0.833){	     		//STEP 1
+				Driver.arcadeDrive(-0.5, 0);
+			}
+			if(timer.get()>.833 && timer.get()<1.833)
+				Driver.stopMotor();
+			if(timer.get() > 1.833 && timer.get() < 2.583){			//STEP 2
+				Driver.tankDrive(0.4,-0.5);
+			}
+			if(timer.get() > 2.583 && timer.get() < 4.937){			//STEP 3
+				Driver.arcadeDrive(-0.5, 0);
+			}
+			if(timer.get()>4.937 && timer.get() < 5.937)
+				Driver.stopMotor();
+			if(timer.get()>5.937 && timer.get() < 6.687){	     		//STEP 4
+				Driver.tankDrive(-0.5,0.4);
+			}
+			if(timer.get() > 6.687 && timer.get() < 7.437){			//STEP 5(add lift and outtake)
+				Driver.arcadeDrive(-0.5, 0);
+			}
+			if(timer.get()>7.437 && timer.get() < 8.437)
+				Driver.stopMotor(); 
+	 }
+		 /*
+		 if(timer.get()>0 && timer.get() < 8.604 ){	     			//STEP 1
+				Driver.arcadeDrive(-0.5, 0);
+			}
+			if(timer.get() > 8.604 && timer.get()< 9.354)
+				Driver.stopMotor();
+			if(timer.get() > 9.354 && timer.get() < 10.354 ){		//STEP 2 (1sec)
+				Driver.tankDrive(-0.5,0.4);
+			}
+			if(timer.get() > 10.354 && timer.get() < 12){		//STEP 3(0.641)
+				Driver.arcadeDrive(-0.5, 0);
+			}
+			if(timer.get() > 12 && timer.get() < 12.5){
+				Driver.tankDrive(0.4,-0.5);
+			}
+	 }
+		 /*
+		 /////////ALPHABOT A11//////////
+		 if(timer.get()>0 && timer.get() < 4.84){	     		//STEP 1 (speed changed from 0.6 to 0.4(Alphabot is faster)
+				Driver.arcadeDrive(-0.5, 0);
+			}
+			if(timer.get()>4.84 && timer.get()<5.84) 
+				Driver.stopMotor();
+			if(timer.get() > 5.84 && timer.get() < 6.84){			//STEP 2
+				Driver.tankDrive(-0.5,0.4);
+			}
+			if(timer.get() > 6.84 && timer.get() < 7.34 ){			//STEP 3
+				Driver.arcadeDrive(-0.5, 0);
+			}
+			if(timer.get() > 7.34 && timer.get() < 8)
+				Driver.stopMotor();
+	 }
+		 /*
 		 if(timer.get() > 0 & timer.get() < .6){		    //turns counterclockwise at 60% speed for .6 seconds(45 degree turn)
 				Driver.tankDrive(-0.6,0.6);
 			}
@@ -241,7 +322,7 @@ public final class Driver implements PIDOutput {
 
 		GyroPid = new PIDController(kP, kI, kD, Robotmap.ahrs, this);
 		GyroPid.setInputRange(-180.0, 180.0);
-		GyroPid.setOutputRange(-0.9, 0.9);
+		GyroPid.setOutputRange(-0.7, 0.7);
 		GyroPid.setAbsoluteTolerance(3.0f);
 		GyroPid.setContinuous(true);
 	}
@@ -401,7 +482,7 @@ public final class Driver implements PIDOutput {
 			timers.start();
 		}
 
-		if (timers.get() < 7) {
+		if (timers.get() < 5) {
 			isRunning = true;
 			Robotmap.liftMotor.set(-0.6);
 			return goToNextStep = false;
@@ -446,12 +527,6 @@ public final class Driver implements PIDOutput {
 					Steps.put(3, false);
 					Steps.put(4, false);
 					Steps.put(5, false);
-					Steps.put(6, false);
-					Steps.put(7, false);
-					Steps.put(8, false);
-					Steps.put(9, false);
-					Steps.put(10 , false);
-
 
 				} else if (gameData == 'R') {
 					Steps.put(1, true);
@@ -466,6 +541,10 @@ public final class Driver implements PIDOutput {
 					Steps.put(1, true);
 					Steps.put(2, false);
 					Steps.put(3, false);
+					Steps.put(4, false);
+					Steps.put(5, false);
+					Steps.put(6, false);
+					Steps.put(7, false);
 				} else if (gameData == 'R') {
 
 					Steps.put(1, true);
@@ -500,6 +579,9 @@ public final class Driver implements PIDOutput {
 				if (gameData == 'L') {
 					Steps.put(1, true);
 					Steps.put(2, false);
+					Steps.put(3, false);
+					Steps.put(4, false);
+					Steps.put(5, false);
 				} else if (gameData == 'R') {
 					Steps.put(1, true);
 					Steps.put(2, false);
@@ -510,9 +592,7 @@ public final class Driver implements PIDOutput {
 
 			if (mStation == 2) {
 				if (gameData == 'L') {
-					Steps.put(1, true);
-					Steps.put(2, false);
-					Steps.put(3, false);
+					
 				} else if (gameData == 'R') {
 
 					Steps.put(1, true);
@@ -564,47 +644,25 @@ public final class Driver implements PIDOutput {
 			if (gameData == 'L') {
 
 				if (Steps.get(1) && !finalStep) {
-					DriveTo(30);
+					DriveTo(151);
 				}
 
 				if (Steps.get(2) && !finalStep) {
-					RotateTo(-45.0f);
+					RotateTo(90.0);
 				}
 				
 				if (Steps.get(3) && !finalStep) {
-					DriveTo(48);
+					DriveTo(15.6);
 				}
 				
 				if (Steps.get(4) && !finalStep) {
-					RotateTo(45.0f);
-				}
-				
-				if (Steps.get(5) && !finalStep) {
-					DriveTo(112);
-				}
-				
-				if (Steps.get(6) && !finalStep) {
-					RotateTo(90.0f);
-				}
-				
-				if (Steps.get(7) && !finalStep) {
-					DriveTo(25.0f);
-				}
-				
-				if (Steps.get(8) && !finalStep) {
 					liftUp();
 				}
 				
-				if (Steps.get(9) && !finalStep) {
-					DriveTo(16.0f);
-				}
-				
-				if (Steps.get(10) && !finalStep) {
+				if (Steps.get(5) && !finalStep) {
 					rollOut();
 				}
 				
-				
-
 			}
 
 			else if (gameData == 'R') {
@@ -613,7 +671,23 @@ public final class Driver implements PIDOutput {
 		}
 
 		if (mStation == 2) {
+if(gameData == 'L') {
+	
+	if (Steps.get(1)) {
+		DriveTo(26);
+	} if (Steps.get(2)) {
+	RotateTo(-90);
+	} if (Steps.get(3)) {
+	DriveTo(73.44);
+	} if (Steps.get(4)) {
+		RotateTo(90);
+	} if (Steps.get(5)) {
+	DriveTo(80);
+	} if (Steps.get(7)) {
+		rollOut();
+	} 
 
+}
 		}
 
 		if (mStation == 3) {
@@ -627,13 +701,16 @@ public final class Driver implements PIDOutput {
 
 			if (gameData == 'L') {
 
-				if (Steps.get(1) && !finalStep) {
-					DriveTo(120);
-				}
+				if (Steps.get(1)) {	
+					DriveTo(299.65);
+				} if (Steps.get(2)) {
+					RotateTo(90);
+				} if (Steps.get(3)) {
+					DriveTo(10);
+				}  if (Steps.get(5)) {
+					rollOut();
+				} 
 
-				if (Steps.get(2) && !finalStep) {
-					RotateTo(45.0f);
-				}
 
 			}
 
