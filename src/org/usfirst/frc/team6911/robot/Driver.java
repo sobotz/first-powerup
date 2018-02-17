@@ -99,29 +99,28 @@ public final class Driver implements PIDOutput {
 
 	//// This function allows to drive in teleop MODE//////////////
 	public void Drive() {
-        
-		
+
 		Driver.arcadeDrive(driverJoystick.getLeft_Y_AXIS(), -driverJoystick.getRight_X_AXIS(), false);
-		Driver.setMaxOutput(0.6); // set to 0.6
-		
-		if(driverJoystick.getRightTopButton()) {
-			 if(!teleopStraight) {
-				 GyroPid.setSetpoint(0.0f);
-				 GyroPid.enable();
-			 }
-			 teleopStraight = true;
-			 stabilizerinit = true;
+		Driver.setMaxOutput(1); // set to 0.6
+
+		if (driverJoystick.getRightTopButton()) {
+			if (!teleopStraight) {
+				GyroPid.setSetpoint(0.0f);
+				GyroPid.enable();
+			}
+			teleopStraight = true;
+			stabilizerinit = true;
 			Driver.arcadeDrive(driverJoystick.getLeft_Y_AXIS(), -kPdeviation, false);
 
 		}
-		
-		if(!driverJoystick.getRightTopButton()) {
-			if(stabilizerinit) {
-			 if(teleopStraight) {
-				 stabilizer();
-				 teleopStraight = false;
-				 stabilizerinit = false;
-			 }
+
+		if (!driverJoystick.getRightTopButton()) {
+			if (stabilizerinit) {
+				if (teleopStraight) {
+					stabilizer();
+					teleopStraight = false;
+					stabilizerinit = false;
+				}
 			}
 		}
 
@@ -129,210 +128,73 @@ public final class Driver implements PIDOutput {
 
 	public void startTimer() {
 		timer.start();
-		Timer.delay(0.01); 
+		Timer.delay(0.01);
+	}
+
+	public void autonomousDrive() {
+		if (timer.get() > 0 && timer.get() < 1.5) { // STEP 1
+			Driver.arcadeDrive(-0.6, 0, false);
 		}
-	
-	 public void autonomousDrive() { 
-		 /////////////A11///////////////
-		 	if(timer.get()>0 && timer.get() < 1.5){	     		//STEP 1
-				Driver.arcadeDrive(-0.6, 0,false);
-			}
-			if(timer.get()>1.5 && timer.get()<2.5) 
-				Driver.stopMotor();
-			if(timer.get() > 2.5 && timer.get() < 3){			//STEP 2
-				Driver.tankDrive(-0.6,0.6);
-			}
-			/*if(timer.get() > 3 && timer.get() < 3.34 ){			//STEP 3
-				Driver.arcadeDrive(-0.6, 0,false);
-			}*/ //replace lift launch
-			/*if(timer.get() > 3 && timer.get() < 9 ){			//STEP 3
-				Robotmap.liftMotor.set(-0.6);
-			}*/
-			if(timer.get() > 3 && timer.get() < 3.1) { // for lift starting down uncomment above and  at 
-				//Robotmap.liftMotor.set(0);
-				Driver.arcadeDrive(-0.6, 0,false);
-			}
-			if(timer.get()> 3.05 && timer.get() < 3.75) {
-				Robotmap.inTakeMotor.set(-1);
-			}
-			if(timer.get()> 3.75 && timer.get() < 5) {
-				Robotmap.inTakeMotor.set(0);
-			}
-		
-		 /////////////A21///////////////
-		 	if(timer.get()>0 && timer.get() < 2.367){	     		//STEP 1
-				Driver.arcadeDrive(-0.6, 0,false);
-			}
-			if(timer.get()>2.367 && timer.get()<3.367) 
-				Driver.stopMotor();
-			if(timer.get() > 3.367 && timer.get() < 3.867){			//STEP 2
-				Driver.tankDrive(-0.6,0.6);
-			}
-		 	if(timer.get()>3.867 && timer.get()<.0474){
-				Driver.arcadeDrive(0.6,0, false);
-			//lift code goes here
-		  /////////////C12///////////////
-		 	if(timer.get()>0 && timer.get() < 1.5){	     		//STEP 1
-				Driver.arcadeDrive(-0.6, 0,false);
-			}
-			if(timer.get()>1.5 && timer.get()<2.5) 
-				Driver.stopMotor();
-			if(timer.get() > 2.5 && timer.get() < 3){			//STEP 2
-				Driver.tankDrive(0.6,-0.6);
-			}
-			/*if(timer.get() > 3 && timer.get() < 3.34 ){			//STEP 3
-				Driver.arcadeDrive(-0.6, 0,false);
-			}*/ //replace lift launch
-			/*if(timer.get() > 3 && timer.get() < 9 ){			//STEP 3
-				Robotmap.liftMotor.set(-0.6);
-			}*/
-			if(timer.get() > 3 && timer.get() < 3.1) { // for lift starting down uncomment above and  at 
-				//Robotmap.liftMotor.set(0);
-				Driver.arcadeDrive(-0.6, 0,false);
-			}
-			if(timer.get()> 3.05 && timer.get() < 3.75) {
-				Robotmap.inTakeMotor.set(-1);
-			}
-			if(timer.get()> 3.75 && timer.get() < 5) {
-				Robotmap.inTakeMotor.set(0);
-			}
-				
-		/////////////C22///////////////
-		 	if(timer.get()>0 && timer.get() < 2.367){	     		//STEP 1
-				Driver.arcadeDrive(-0.6, 0,false);
-			}
-			if(timer.get()>2.367 && timer.get()<3.367) 
-				Driver.stopMotor();
-			if(timer.get() > 3.367 && timer.get() < 3.867){			//STEP 2
-				Driver.tankDrive(0.6,-0.6);
-			}
-		 	if(timer.get()>3.867 && timer.get()<.0474){
-				Driver.arcadeDrive(0.6,0, false);
-			//lift code goes here
-				
-		 /////////////Autoline///////////////
-		 	if(timer.get()>0 && timer.get() < .711){	     		//STEP 1
-				Driver.arcadeDrive(-0.6, 0,false);
-			}
-			if(timer.get()>.711 && timer.get()<2) 
-				Driver.stopMotor();
-				
-		 /////////////B11///////////////
-			if(timer.get()>0 && timer.get() < .205)	     			//STEP 1
-				Driver.arcadeDrive(-0.6, 0,false);
-			if(timer.get()>.205 && timer.get()<1) 
-				Driver.stopMotor();
-			if(timer.get() > 1 && timer.get() < 1.5)			//STEP 2
-				Driver.tankDrive(0.6,-0.6);
-			if(timer.get()>1.5 && timer.get() < 2.08)	     		//STEP 1
-				Driver.arcadeDrive(-0.6, 0,false);
-			if(timer.get()>2.08 && timer.get()<3) 
-				Driver.stopMotor();
-			if(timer.get() > 3 && timer.get() < 3.5)			//STEP 2
-				Driver.tankDrive(-0.6,0.6);
-			if(timer.get()>3.5 && timer.get()<4.14)
-				Driver.arcadeDrive(-0.6,0,false);
-			if(timer.get()>4.14 && timer.get()<5) 
-				Driver.stopMotor();
-				
-		/////////////B12///////////////
-			if(timer.get()>0 && timer.get()<0.205)	     			//STEP 1
-				Driver.arcadeDrive(-0.6, 0,false);
-			if(timer.get()>0.205 && timer.get()<1) 
-				Driver.stopMotor();
-			if(timer.get()>1 && timer.get()<1.5)			//STEP 2
-				Driver.tankDrive(-0.6,0.6);
-			if(timer.get()>1.5 && timer.get()<1.803)
-				Driver.arcadeDrive(-0.6,0,false);
-			if(timer.get()>1.803 && timer.get()<3)
-				Driver.stopMotor();
-			if(timer.get()>3 && timer.get()<3.5)
-				Driver.tankDrive(0.6,-0.6);
-			if(timer.get()>3.5 && timer.get()<4.14)
-				Driver.arcadeDrive(-0.6,0,false);
-			if(timer.get()>4.14 && timer.get()<5) 
-				Driver.stopMotor();
-	 }
-		 /*
-		 if(timer.get()>0 && timer.get() < 0.833){	     		//STEP 1
-				Driver.arcadeDrive(-0.5, 0);
-			}
-			if(timer.get()>.833 && timer.get()<1.833)
-				Driver.stopMotor();
-			if(timer.get() > 1.833 && timer.get() < 2.583){			//STEP 2
-				Driver.tankDrive(0.4,-0.5);
-			}
-			if(timer.get() > 2.583 && timer.get() < 4.937){			//STEP 3
-				Driver.arcadeDrive(-0.5, 0);
-			}
-			if(timer.get()>4.937 && timer.get() < 5.937)
-				Driver.stopMotor();
-			if(timer.get()>5.937 && timer.get() < 6.687){	     		//STEP 4
-				Driver.tankDrive(-0.5,0.4);
-			}
-			if(timer.get() > 6.687 && timer.get() < 7.437){			//STEP 5(add lift and outtake)
-				Driver.arcadeDrive(-0.5, 0);
-			}
-			if(timer.get()>7.437 && timer.get() < 8.437)
-				Driver.stopMotor(); 
-	 }
-		 /*
-		 if(timer.get()>0 && timer.get() < 8.604 ){	     			//STEP 1
-				Driver.arcadeDrive(-0.5, 0);
-			}
-			if(timer.get() > 8.604 && timer.get()< 9.354)
-				Driver.stopMotor();
-			if(timer.get() > 9.354 && timer.get() < 10.354 ){		//STEP 2 (1sec)
-				Driver.tankDrive(-0.5,0.4);
-			}
-			if(timer.get() > 10.354 && timer.get() < 12){		//STEP 3(0.641)
-				Driver.arcadeDrive(-0.5, 0);
-			}
-			if(timer.get() > 12 && timer.get() < 12.5){
-				Driver.tankDrive(0.4,-0.5);
-			}
-	 }
-		 /*
-		 /////////ALPHABOT A11//////////
-		 if(timer.get()>0 && timer.get() < 4.84){	     		//STEP 1 (speed changed from 0.6 to 0.4(Alphabot is faster)
-				Driver.arcadeDrive(-0.5, 0);
-			}
-			if(timer.get()>4.84 && timer.get()<5.84) 
-				Driver.stopMotor();
-			if(timer.get() > 5.84 && timer.get() < 6.84){			//STEP 2
-				Driver.tankDrive(-0.5,0.4);
-			}
-			if(timer.get() > 6.84 && timer.get() < 7.34 ){			//STEP 3
-				Driver.arcadeDrive(-0.5, 0);
-			}
-			if(timer.get() > 7.34 && timer.get() < 8)
-				Driver.stopMotor();
-	 }
-		 /*
-		 if(timer.get() > 0 & timer.get() < .6){		    //turns counterclockwise at 60% speed for .6 seconds(45 degree turn)
-				Driver.tankDrive(-0.6,0.6);
-			}
-			if(timer.get()>.6 && timer.get()< 4)
-				Driver.stopMotor();
-	 }
-		  /*
-		 if(timer.get() > 0 & timer.get() < 1){		    //turns counterclockwise at 60% speed for 1 seconds(90 degree turn)
-				Driver.tankDrive(-0.6,0.6);
-			}
-			if(timer.get()>1 && timer.get()< 4)
-				Driver.stopMotor();
-	 }
-		 /*
-		 	///////////Test 1///////////
-		 if(timer.get()>0 && timer.get() < 5){	     		//goes at 60% speed for 5 second(13ft)(2.6ftpersec)(31.2"persec  )
-				Driver.arcadeDrive(-0.6, 0);
-			}
-			if(timer.get()>5 && timer.get()< 7)
-				Driver.stopMotor();
-	 }
-	 /* ///////////Simple Straight and Lift(15
-	 * seconds)/////////// if(timer.get()>0 && timer.get()<=7){ //Goes forward for
-	 * 10 seconds Driver.arcadeDrive(0.3,0); }
+		if (timer.get() > 1.5 && timer.get() < 2.5)
+			Driver.stopMotor();
+		if (timer.get() > 2.5 && timer.get() < 3) { // STEP 2
+			Driver.tankDrive(-0.6, 0.6);
+		}
+		/*
+		 * if(timer.get() > 3 && timer.get() < 3.34 ){ //STEP 3 Driver.arcadeDrive(-0.6,
+		 * 0,false); }
+		 */ // replace lift launch
+		/*
+		 * if(timer.get() > 3 && timer.get() < 9 ){ //STEP 3
+		 * Robotmap.liftMotor.set(-0.6); }
+		 */
+		if (timer.get() > 3 && timer.get() < 3.1) { // for lift starting down uncomment above and at
+			// Robotmap.liftMotor.set(0);
+			Driver.arcadeDrive(-0.6, 0, false);
+		}
+		if (timer.get() > 3.05 && timer.get() < 3.75) {
+			Robotmap.inTakeMotor.set(-1);
+		}
+		if (timer.get() > 3.75 && timer.get() < 5) {
+			Robotmap.inTakeMotor.set(0);
+		}
+	}
+
+	/*
+	 * if(timer.get()>0 && timer.get() < 0.833){ //STEP 1 Driver.arcadeDrive(-0.5,
+	 * 0); } if(timer.get()>.833 && timer.get()<1.833) Driver.stopMotor();
+	 * if(timer.get() > 1.833 && timer.get() < 2.583){ //STEP 2
+	 * Driver.tankDrive(0.4,-0.5); } if(timer.get() > 2.583 && timer.get() < 4.937){
+	 * //STEP 3 Driver.arcadeDrive(-0.5, 0); } if(timer.get()>4.937 && timer.get() <
+	 * 5.937) Driver.stopMotor(); if(timer.get()>5.937 && timer.get() < 6.687){
+	 * //STEP 4 Driver.tankDrive(-0.5,0.4); } if(timer.get() > 6.687 && timer.get()
+	 * < 7.437){ //STEP 5(add lift and outtake) Driver.arcadeDrive(-0.5, 0); }
+	 * if(timer.get()>7.437 && timer.get() < 8.437) Driver.stopMotor(); } /*
+	 * if(timer.get()>0 && timer.get() < 8.604 ){ //STEP 1 Driver.arcadeDrive(-0.5,
+	 * 0); } if(timer.get() > 8.604 && timer.get()< 9.354) Driver.stopMotor();
+	 * if(timer.get() > 9.354 && timer.get() < 10.354 ){ //STEP 2 (1sec)
+	 * Driver.tankDrive(-0.5,0.4); } if(timer.get() > 10.354 && timer.get() < 12){
+	 * //STEP 3(0.641) Driver.arcadeDrive(-0.5, 0); } if(timer.get() > 12 &&
+	 * timer.get() < 12.5){ Driver.tankDrive(0.4,-0.5); } } /* /////////ALPHABOT
+	 * A11////////// if(timer.get()>0 && timer.get() < 4.84){ //STEP 1 (speed
+	 * changed from 0.6 to 0.4(Alphabot is faster) Driver.arcadeDrive(-0.5, 0); }
+	 * if(timer.get()>4.84 && timer.get()<5.84) Driver.stopMotor(); if(timer.get() >
+	 * 5.84 && timer.get() < 6.84){ //STEP 2 Driver.tankDrive(-0.5,0.4); }
+	 * if(timer.get() > 6.84 && timer.get() < 7.34 ){ //STEP 3
+	 * Driver.arcadeDrive(-0.5, 0); } if(timer.get() > 7.34 && timer.get() < 8)
+	 * Driver.stopMotor(); } /* if(timer.get() > 0 & timer.get() < .6){ //turns
+	 * counterclockwise at 60% speed for .6 seconds(45 degree turn)
+	 * Driver.tankDrive(-0.6,0.6); } if(timer.get()>.6 && timer.get()< 4)
+	 * Driver.stopMotor(); } /* if(timer.get() > 0 & timer.get() < 1){ //turns
+	 * counterclockwise at 60% speed for 1 seconds(90 degree turn)
+	 * Driver.tankDrive(-0.6,0.6); } if(timer.get()>1 && timer.get()< 4)
+	 * Driver.stopMotor(); } /* ///////////Test 1/////////// if(timer.get()>0 &&
+	 * timer.get() < 5){ //goes at 60% speed for 5
+	 * second(13ft)(2.6ftpersec)(31.2"persec ) Driver.arcadeDrive(-0.6, 0); }
+	 * if(timer.get()>5 && timer.get()< 7) Driver.stopMotor(); } /*
+	 * ///////////Simple Straight and Lift(15 seconds)/////////// if(timer.get()>0
+	 * && timer.get()<=7){ //Goes forward for 10 seconds Driver.arcadeDrive(0.3,0);
+	 * }
 	 * 
 	 * if(timer.get()>7 && timer.get<=10){ Driver.stopMotor(); //Stops driving }
 	 * 
@@ -410,8 +272,8 @@ public final class Driver implements PIDOutput {
 	 * //Starts intake motor-launches power cube
 	 * 
 	 * if(timer.get()>14.5 && timer.get() <= 15) Robotmap.inTakeA.set(0); //Stops
-	 *intake motor 
-	 */ 
+	 * intake motor
+	 */
 	////////// PIDs Instantiation///////////
 	private void GyroPID() {
 
@@ -437,7 +299,7 @@ public final class Driver implements PIDOutput {
 	private void EncoderPID() {
 		EncoderPid = new PIDController(ekP, ekI, ekD, new EncodersAverage(), new EncoderPIDOutput());
 		EncoderPid.setInputRange(-5000, 5000);
-		EncoderPid.setOutputRange(-0.9, 0.9);
+		EncoderPid.setOutputRange(-0.6, 0.6);
 		EncoderPid.setAbsoluteTolerance(6.0f);
 		EncoderPid.setContinuous(true);
 	}
@@ -570,16 +432,15 @@ public final class Driver implements PIDOutput {
 		}
 	}
 
-	///////////////////////////////////
-	public static Boolean liftUp() {
+	public static Boolean liftUp(double laps, double speed) {
 
 		if (!isRunning) {
 			timers.start();
 		}
 
-		if (timers.get() < 5) {
+		if (timers.get() < laps) {
 			isRunning = true;
-			Robotmap.liftMotor.set(-0.6);
+			Robotmap.liftMotor.set(speed);
 			return goToNextStep = false;
 		} else {
 			timers.reset();
@@ -588,13 +449,29 @@ public final class Driver implements PIDOutput {
 		}
 
 	}
+	
+	public static void liftUp2(double laps,double speed) {
 
-	public static Boolean rollOut() {
+		if (!isRunning) {
+			timers.start();
+		}
+
+		if (timers.get() < laps) {
+			isRunning = true;
+			Robotmap.liftMotor.set(speed);
+		} else {
+			timers.reset();
+			Robotmap.liftMotor.set(0);
+		}
+
+	}
+
+	public static Boolean rollOut(double laps) {
 		if (!isRunning) {
 			timerss.start();
 		}
 
-		if (timerss.get() < 3) {
+		if (timerss.get() < laps) {
 			isRunning = true;
 			Robotmap.inTakeMotor.set(-1);
 			return goToNextStep = false;
@@ -682,12 +559,15 @@ public final class Driver implements PIDOutput {
 					Steps.put(2, false);
 					Steps.put(3, false);
 					Steps.put(4, false);
+					Steps.put(5, false);
+					Steps.put(6, false);
+					Steps.put(7, false);
 				}
 			}
 
 			if (mStation == 2) {
 				if (gameData == 'L') {
-					
+
 				} else if (gameData == 'R') {
 
 					Steps.put(1, true);
@@ -732,96 +612,134 @@ public final class Driver implements PIDOutput {
 	}
 
 	public static void Scheduler() {
- if(switchOrScale == "switch") {
-	 
-		if (mStation == 1) {
+		if (switchOrScale == "switch") {
 
-			if (gameData == 'L') {
+			if (mStation == 1) {
 
-				if (Steps.get(1) && !finalStep) {
-					DriveTo(151);
+				if (gameData == 'L') {
+
+					if (Steps.get(1) && !finalStep) {
+						DriveTo(151);
+					}
+
+					if (Steps.get(2) && !finalStep) {
+						RotateTo(90.0);
+					}
+
+					if (Steps.get(3) && !finalStep) {
+						DriveTo(15.6);
+					}
+
+					if (Steps.get(4) && !finalStep) {
+						liftUp(5,-0.5);
+					}
+
+					if (Steps.get(5) && !finalStep) {
+						rollOut(2);
+					}
+
 				}
 
-				if (Steps.get(2) && !finalStep) {
-					RotateTo(90.0);
+				else {
+
 				}
-				
-				if (Steps.get(3) && !finalStep) {
-					DriveTo(15.6);
-				}
-				
-				if (Steps.get(4) && !finalStep) {
-					liftUp();
-				}
-				
-				if (Steps.get(5) && !finalStep) {
-					rollOut();
-				}
-				
-			}
-
-			else if (gameData == 'R') {
-
-			}
-		}
-
-		if (mStation == 2) {
-if(gameData == 'L') {
-	
-	if (Steps.get(1)) {
-		DriveTo(26);
-	} if (Steps.get(2)) {
-	RotateTo(-90);
-	} if (Steps.get(3)) {
-	DriveTo(73.44);
-	} if (Steps.get(4)) {
-		RotateTo(90);
-	} if (Steps.get(5)) {
-	DriveTo(80);
-	} if (Steps.get(7)) {
-		rollOut();
-	} 
-
-}
-		}
-
-		if (mStation == 3) {
-
-		}
- }
- 
- if(switchOrScale == "scale") {
-	 
-		if (mStation == 1) {
-
-			if (gameData == 'L') {
-
-				if (Steps.get(1)) {	
-					DriveTo(299.65);
-				} if (Steps.get(2)) {
-					RotateTo(90);
-				} if (Steps.get(3)) {
-					DriveTo(10);
-				}  if (Steps.get(5)) {
-					rollOut();
-				} 
-
 
 			}
 
-			else if (gameData == 'R') {
+			if (mStation == 2) {
+				if (gameData == 'L') {
+
+					if (Steps.get(1)) {
+						DriveTo(26);
+					}
+					if (Steps.get(2)) {
+						RotateTo(-90);
+					}
+					if (Steps.get(3)) {
+						DriveTo(73.44);
+					}
+					if (Steps.get(4)) {
+						RotateTo(90);
+					}
+					if (Steps.get(5)) {
+						DriveTo(80);
+					}
+					if (Steps.get(7)) {
+						rollOut(2);
+					}
+
+				} else {
+
+				}
+			}
+
+			if (mStation == 3) {
+				if (gameData == 'L') {
+
+				} else {
+
+				}
 
 			}
 		}
 
-		if (mStation == 2) {
+		if (switchOrScale == "scale") {
+
+			if (mStation == 1) {
+
+				if (gameData == 'L') {
+					liftUp2(8,-1);
+
+					if (Steps.get(1)) {	
+						DriveTo(228);
+					} if (Steps.get(2)) {
+						RotateTo(45);
+					} if (Steps.get(3)) {
+						DriveTo(24);
+					} if (Steps.get(5)) {
+						rollOut(2);
+					}
+
+
+				}
+
+				else if (gameData == 'R') {
+					if (Steps.get(1)) {
+						DriveTo(228);	
+						} if (Steps.get(2)) {
+							RotateTo(90);
+						} if (Steps.get(3)) {
+							DriveTo(180);
+						} if (Steps.get(4)) {
+							RotateTo(-90);
+						} if (Steps.get(5)) {
+							DriveTo(8);
+						}  if (Steps.get(6)) {
+							liftUp(5,-0.9);
+						} if (Steps.get(7)) {
+							rollOut(2);
+						}
+
+				}
+			}
+
+			if (mStation == 2) {
+				if (gameData == 'L') {
+
+				} else {
+
+				}
+			}
+
+			if (mStation == 3) {
+				if (gameData == 'L') {
+				}
+				else {
+					
+				}
+			}
 
 		}
-
-		if (mStation == 3) {
-
-		}
-}
 
 		StepPositionManager();
 	}
@@ -842,14 +760,15 @@ if(gameData == 'L') {
 		EncoderPid.setSetpoint(0.0f);
 
 		isRunning = false;
-		Timer.delay(0.03);
+		Timer.delay(0.05);
 	}
-	
+
 	public static void stabilizer2() {
-		
+
 		stepPosition = 1;
 		finalStep = false;
-		
+		Steps.clear();
+
 	}
 
 	///////// This function is used to reset the Gyro angle/////////////
