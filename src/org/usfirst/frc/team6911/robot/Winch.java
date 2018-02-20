@@ -1,6 +1,8 @@
 package org.usfirst.frc.team6911.robot;
 public class Winch {
+	private static OI liftController;
 	public Winch() {
+		liftController = new OI(Robotmap.liftController);
 		Robotmap.winchMotor.set(0.0);
 	}
 	public void WinchControl() {
