@@ -30,8 +30,11 @@ public class Robot extends IterativeRobot {
 	  private Lift lift;
 	private SendableChooser<Integer> stationChooser = new SendableChooser<>();
 	private SendableChooser<String> switchORScaleChooser = new SendableChooser<>();
+	private SendableChooser<Boolean> openLooporClosedloop = new SendableChooser<>();
 	private int selectedStation;
 	private String switchORScale;
+	private Boolean  autoMethod;
+
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -42,10 +45,13 @@ public class Robot extends IterativeRobot {
 		driver = new Driver();
 		lift = new Lift();
 		
+		openLooporClosedloop.addObject("Closed loop", true);
+		openLooporClosedloop.addObject("Open loop", false);
+		SmartDashboard.putData("Open loop or Closed loop", openLooporClosedloop);
+		
 		switchORScaleChooser.addObject("RED Alliance", "switch");
 		switchORScaleChooser.addObject("BLUE Alliance", "scale");
 		SmartDashboard.putData("Set alliance", switchORScaleChooser);
-
 
 		stationChooser.addDefault("Station 1", 1);
 		stationChooser.addObject("Station 2", 2);
@@ -72,10 +78,14 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		selectedStation = stationChooser.getSelected();
 		switchORScale = switchORScaleChooser.getSelected();
-		driver.StepsManager(switchORScale, DriverStation.getInstance().getGameSpecificMessage(),selectedStation);
+		autoMethod = openLooporClosedloop.getSelected();
+		if(autoMethod) {
+			driver.StepsManager(switchORScale, DriverStation.getInstance().getGameSpecificMessage(),selectedStation);
+		}else {
+			driver.startTimer();
+		}
 		driver.stabilizer();
 		
-		driver.startTimer();
 
 	}
 
@@ -87,9 +97,13 @@ public class Robot extends IterativeRobot {
 	
 	
 	public void autonomousPeriodic() {
-		driver.autonomousDrive();
 
-		//driver.Scheduler();
+		
+		if(autoMethod) {
+			driver.Scheduler();
+		}else {
+			driver.autonomousDrive();
+		}
 
 		driver.Dashboard();
 	}
