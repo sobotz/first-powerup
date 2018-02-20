@@ -49,8 +49,8 @@ public class Robot extends IterativeRobot {
 		openLooporClosedloop.addObject("Open loop", false);
 		SmartDashboard.putData("Open loop or Closed loop", openLooporClosedloop);
 		
-		switchORScaleChooser.addObject("RED Alliance", "switch");
-		switchORScaleChooser.addObject("BLUE Alliance", "scale");
+		switchORScaleChooser.addObject("Switch", "switch");
+		switchORScaleChooser.addObject("Scale", "scale");
 		SmartDashboard.putData("Set alliance", switchORScaleChooser);
 
 		stationChooser.addDefault("Station 1", 1);
@@ -82,7 +82,7 @@ public class Robot extends IterativeRobot {
 		if(autoMethod) {
 			driver.StepsManager(switchORScale, DriverStation.getInstance().getGameSpecificMessage(),selectedStation);
 			driver.stabilizer();
-			driver.stabilizer2();
+			//driver.stabilizer2();
 
 		}else {
 			driver.startTimer();

@@ -106,7 +106,7 @@ public final class Driver implements PIDOutput {
 	public void Drive() {
 
 		Driver.arcadeDrive(driverJoystick.getLeft_Y_AXIS(), -driverJoystick.getRight_X_AXIS(), false);
-		Driver.setMaxOutput(1); // set to 0.6
+		Driver.setMaxOutput(0.7); // set to 0.6
 
 		if (driverJoystick.getRightTopButton()) {
 			if (!teleopStraight) {
@@ -511,7 +511,7 @@ public final class Driver implements PIDOutput {
 			timersss.start();
 		}
 
-		if (timersss.get() < 1.5) {
+		if (timersss.get() < 0.7) {
 			isRunning = true;
 			Robotmap.liftMotor.set(1);
 			return goToNextStep = false;
@@ -666,7 +666,7 @@ public final class Driver implements PIDOutput {
 						liftDown();
 					}
 					if (Steps.get(1) && !finalStep) {
-						DriveTo(151);
+						DriveTo(140);
 					}
 
 					if (Steps.get(2) && !finalStep) {
@@ -695,7 +695,8 @@ public final class Driver implements PIDOutput {
 					////// Path B11
 					if (Steps.get(0) && !finalStep) {
 						liftDown();
-					}					if (Steps.get(1) && !finalStep) {
+					}					
+					if (Steps.get(1) && !finalStep) {
 						DriveTo(26);
 					}
 					if (Steps.get(2) && !finalStep) {
@@ -708,7 +709,7 @@ public final class Driver implements PIDOutput {
 						RotateTo(90);
 					}
 					if (Steps.get(5) && !finalStep) {
-						DriveTo(80);
+						DriveTo(62);
 					}
 					if (Steps.get(6) && !finalStep) {
 						rollOut(2);
@@ -733,7 +734,7 @@ public final class Driver implements PIDOutput {
 						RotateTo(-90);
 					}
 					if (Steps.get(5) && !finalStep) {
-						DriveTo(80);
+						DriveTo(62);
 					}
 					if (Steps.get(6) && !finalStep) {
 						rollOut(2);
@@ -751,7 +752,7 @@ public final class Driver implements PIDOutput {
 						liftDown();
 					}
 					if (Steps.get(1) && !finalStep) {
-						DriveTo(151);
+						DriveTo(140);
 					}
 
 					if (Steps.get(2) && !finalStep) {
@@ -779,9 +780,9 @@ public final class Driver implements PIDOutput {
 						liftDown();
 					}
 					if (Steps.get(1)) {	
-						DriveTo(228);
+						DriveandLift(228,14,-1);
 					} if (Steps.get(2)) {
-						RotateTo(45);
+						RotateTo(30);
 					} if (Steps.get(3)) {
 						DriveTo(24);
 					} if (Steps.get(5)) {
@@ -909,4 +910,4 @@ public final class Driver implements PIDOutput {
 
 		Robotmap.liftMotor.set(0);
 	}
-}
+} 
