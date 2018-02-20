@@ -96,7 +96,7 @@ public final class Driver implements PIDOutput {
 
 		EncoderPID();
 
-		stepPosition = 1;
+		stepPosition = 0;
 
 		timer = new Timer();
 
@@ -506,17 +506,21 @@ public final class Driver implements PIDOutput {
 
 	
 	
-	public static void lift() {
+	public static Boolean liftDown() {
 		if (!isRunning) {
 			timersss.start();
 		}
 
 		if (timersss.get() < 1.5) {
 			isRunning = true;
-			Robotmap.liftMotor.set(-1);
+			Robotmap.liftMotor.set(1);
+			return goToNextStep = false;
+
 		} else {
 			timers.reset();
 			Robotmap.liftMotor.set(0);
+			return goToNextStep = true;
+
 		}
 		
 		
@@ -533,7 +537,8 @@ public final class Driver implements PIDOutput {
 			if (mStation == 1) {
 
 				if (gameData == 'L') {
-					Steps.put(1, true);
+					Steps.put(0, true);
+					Steps.put(1, false);
 					Steps.put(2, false);
 					Steps.put(3, false);
 					Steps.put(4, false);
@@ -544,14 +549,16 @@ public final class Driver implements PIDOutput {
 
 			if (mStation == 2) {
 				if (gameData == 'L') {
-					Steps.put(1, true);
+					Steps.put(0, true);
+					Steps.put(1, false);
 					Steps.put(2, false);
 					Steps.put(3, false);
 					Steps.put(4, false);
 					Steps.put(5, false);
 					Steps.put(6, false);
 				} else if (gameData == 'R') {
-					Steps.put(1, true);
+					Steps.put(0, true);
+					Steps.put(1, false);					
 					Steps.put(2, false);
 					Steps.put(3, false);
 					Steps.put(4, false);
@@ -565,7 +572,8 @@ public final class Driver implements PIDOutput {
 				if (gameData == 'L') {
 					
 				} else if (gameData == 'R') {
-					Steps.put(1, true);
+					Steps.put(0, true);
+					Steps.put(1, false);					
 					Steps.put(2, false);
 					Steps.put(3, false);
 					Steps.put(4, false);
@@ -580,13 +588,15 @@ public final class Driver implements PIDOutput {
 			if (mStation == 1) {
 
 				if (gameData == 'L') {
-					Steps.put(1, true);
+					Steps.put(0, true);
+					Steps.put(1, false);
 					Steps.put(2, false);
 					Steps.put(3, false);
 					Steps.put(4, false);
 					Steps.put(5, false);
 				} else if (gameData == 'R') {
-					Steps.put(1, true);
+					Steps.put(0, true);
+					Steps.put(1, false);
 					Steps.put(2, false);
 					Steps.put(3, false);
 					Steps.put(4, false);
@@ -601,7 +611,8 @@ public final class Driver implements PIDOutput {
 
 				} else if (gameData == 'R') {
 
-					Steps.put(1, true);
+					Steps.put(0, true);
+					Steps.put(1, false);
 					Steps.put(2, false);
 					Steps.put(3, false);
 					Steps.put(4, false);
@@ -611,12 +622,14 @@ public final class Driver implements PIDOutput {
 
 			if (mStation == 3) {
 				if (gameData == 'L') {
-					Steps.put(1, true);
+					Steps.put(0, true);
+					Steps.put(1, false);
 					Steps.put(2, false);
 					Steps.put(3, false);
 				} else if (gameData == 'R') {
 
-					Steps.put(1, true);
+					Steps.put(0, true);
+					Steps.put(1, false);
 					Steps.put(2, false);
 					Steps.put(3, false);
 					Steps.put(4, false);
@@ -649,7 +662,9 @@ public final class Driver implements PIDOutput {
 
 				if (gameData == 'L') {
 					/////// Path A11
-                     lift();
+					if (Steps.get(0) && !finalStep) {
+						liftDown();
+					}
 					if (Steps.get(1) && !finalStep) {
 						DriveTo(151);
 					}
@@ -678,8 +693,9 @@ public final class Driver implements PIDOutput {
 			if (mStation == 2) {
 				if (gameData == 'L') {		
 					////// Path B11
-                    lift();
-					if (Steps.get(1) && !finalStep) {
+					if (Steps.get(0) && !finalStep) {
+						liftDown();
+					}					if (Steps.get(1) && !finalStep) {
 						DriveTo(26);
 					}
 					if (Steps.get(2) && !finalStep) {
@@ -701,8 +717,9 @@ public final class Driver implements PIDOutput {
 				} else {
 					
 					//////// Path B12
-                    lift();
-
+					if (Steps.get(0) && !finalStep) {
+						liftDown();
+					}
 					if (Steps.get(1) && !finalStep) {
 						DriveTo(26);
 					}
@@ -730,8 +747,9 @@ public final class Driver implements PIDOutput {
 
 				} else {
 					////// Path C12
-                    lift();
-
+					if (Steps.get(0) && !finalStep) {
+						liftDown();
+					}
 					if (Steps.get(1) && !finalStep) {
 						DriveTo(151);
 					}
@@ -757,8 +775,9 @@ public final class Driver implements PIDOutput {
 			if (mStation == 1) {
 
 				if (gameData == 'L') {
-                    lift();
-
+					if (Steps.get(0) && !finalStep) {
+						liftDown();
+					}
 					if (Steps.get(1)) {	
 						DriveTo(228);
 					} if (Steps.get(2)) {
@@ -772,8 +791,9 @@ public final class Driver implements PIDOutput {
 				}
 
 				else if (gameData == 'R') {
-                    lift();
-
+					if (Steps.get(0) && !finalStep) {
+						liftDown();
+					}                   
 					if (Steps.get(1)) {
 						DriveTo(228);	
 						} if (Steps.get(2)) {
@@ -835,7 +855,7 @@ public final class Driver implements PIDOutput {
 
 	public static void stabilizer2() {
 
-		stepPosition = 1;
+		stepPosition = 0;
 		finalStep = false;
 		Steps.clear();
 

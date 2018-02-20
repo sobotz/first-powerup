@@ -81,10 +81,12 @@ public class Robot extends IterativeRobot {
 		autoMethod = openLooporClosedloop.getSelected();
 		if(autoMethod) {
 			driver.StepsManager(switchORScale, DriverStation.getInstance().getGameSpecificMessage(),selectedStation);
+			driver.stabilizer();
+			driver.stabilizer2();
+
 		}else {
 			driver.startTimer();
 		}
-		driver.stabilizer();
 		
 
 	}
