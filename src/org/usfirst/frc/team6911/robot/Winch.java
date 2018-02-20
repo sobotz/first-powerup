@@ -1,6 +1,4 @@
 package org.usfirst.frc.team6911.robot;
-
-/*
 public class Winch {
 	public Winch() {
 		Robotmap.winchMotor.set(0.0);
@@ -17,4 +15,3 @@ public class Winch {
 		}
 	}
 }
-*/
