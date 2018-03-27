@@ -28,12 +28,18 @@ public class Robot extends IterativeRobot {
 
 	  private Driver driver;
 	  private Lift lift;
+	  private Winch winch;
 	private SendableChooser<Integer> stationChooser = new SendableChooser<>();
 	private SendableChooser<String> switchORScaleChooser = new SendableChooser<>();
 	private SendableChooser<Boolean> openLooporClosedloop = new SendableChooser<>();
+	private SendableChooser<Double> maxSpeedChooser = new SendableChooser<>();
+	private SendableChooser<Boolean> GamepadOrJoystickChooser = new SendableChooser<>();
 	private int selectedStation;
 	private String switchORScale;
 	private Boolean  autoMethod;
+	private Boolean GamepadOrJoystick;
+	private Double maxSpeed;
+
 
 
 	/**
@@ -42,24 +48,31 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		driver = new Driver();
-		lift = new Lift();
-		
-		openLooporClosedloop.addObject("Closed loop", true);
+		openLooporClosedloop.addDefault("Closed loop", true);
 		openLooporClosedloop.addObject("Open loop", false);
-		SmartDashboard.putData("Open loop or Closed loop", openLooporClosedloop);
+		SmartDashboard.putData("Open or Closed loop", openLooporClosedloop);
 		
+		switchORScaleChooser.addDefault("Scale", "scale");
 		switchORScaleChooser.addObject("Switch", "switch");
-		switchORScaleChooser.addObject("Scale", "scale");
-		SmartDashboard.putData("Set alliance", switchORScaleChooser);
+		SmartDashboard.putData("Switch or Scale", switchORScaleChooser);
 
 		stationChooser.addDefault("Station 1", 1);
 		stationChooser.addObject("Station 2", 2);
 		stationChooser.addObject("Station 3", 3);
 		SmartDashboard.putData("Select Station", stationChooser);
 
+		GamepadOrJoystickChooser.addDefault("GamePad", true);
+		GamepadOrJoystickChooser.addObject("Joystick", false);
+		SmartDashboard.putData("Choose controller", GamepadOrJoystickChooser);
 
-
+		
+		maxSpeedChooser.addDefault("0.6", 0.8);
+		maxSpeedChooser.addObject("0.8", 0.8);
+		maxSpeedChooser.addObject("1", 1.0);
+		SmartDashboard.putData("Set MaxSpeed", maxSpeedChooser);		
+		driver = new Driver();
+	lift = new Lift();
+	winch = new Winch();
 	}
 
 	/**
@@ -80,15 +93,14 @@ public class Robot extends IterativeRobot {
 		switchORScale = switchORScaleChooser.getSelected();
 		autoMethod = openLooporClosedloop.getSelected();
 		if(autoMethod) {
-			driver.StepsManager(switchORScale, DriverStation.getInstance().getGameSpecificMessage(),selectedStation);
 			driver.stabilizer();
-			//driver.stabilizer2();
+			driver.stabilizer2();
+			driver.StepsManager(switchORScale, DriverStation.getInstance().getGameSpecificMessage(),selectedStation,maxSpeedChooser.getSelected());
 
 		}else {
 			driver.startTimer();
 		}
 		
-
 	}
 
 	/**
@@ -115,6 +127,7 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		// TODO Auto-generated method stub
 		driver.stabilizer();
+		GamepadOrJoystick = GamepadOrJoystickChooser.getSelected();
 	}
 
 	/**
@@ -122,11 +135,13 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		driver.Drive();
+		maxSpeed = maxSpeedChooser.getSelected();
+		driver.Drive(GamepadOrJoystick,maxSpeed);
 		lift.liftControl();
+		winch.WinchControl();
 		driver.Dashboard();
-		driver.resetYaw();
-		driver.resetencoder();
+		//driver.resetYaw();
+		///driver.resetencoder();
 	}
 
 	/**

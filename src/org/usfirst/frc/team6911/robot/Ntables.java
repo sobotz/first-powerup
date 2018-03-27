@@ -7,7 +7,9 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
 @SuppressWarnings("deprecation")
 public class Ntables {
 
+	public static NetworkTableInstance Itable;
 
+	public static NetworkTableEntry table;
 
 	public static NetworkTable tables;
 

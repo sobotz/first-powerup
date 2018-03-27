@@ -15,7 +15,7 @@ public class Controller {
 	Joystick Joystick;
 	/////////////////////////////////
 
-	double left_Y_AXIS, left_X_AXIS, right_Y_AXIS, right_X_AXIS, Z_AXIS;
+	double left_Y_AXIS, left_X_AXIS, right_Y_AXIS, right_X_AXIS, Z_AXIS, SD;
 	Boolean A, B, Y, X, leftTopButton, rightTopButton;
 	double rightBackButton;
 	double leftBackButton;
@@ -39,7 +39,10 @@ public class Controller {
 		return left_X_AXIS;
 	}
 
-	
+	public double SD() {
+		SD = Joystick.getRawAxis(3);
+		return SD;
+	}
 
 	
 	public Boolean get1() {
