@@ -24,13 +24,6 @@ public class Robotmap {
 	 * Object=>Joystick, Ultrasonic Object=> Ultrasonic sensors,
 	 * ........................
 	 */
-
-	static enum DriveMode {
-		ARCADE, TANKDRIVE, CURVATUREDRIVE
-	}
-	
-
-
 	/*
 	 * SpeedController Declaration
 	 */
@@ -43,10 +36,10 @@ public class Robotmap {
 	*/
 	
 	
-	public static SpeedController frontLeftMotor = new Spark(4);
-	public static SpeedController rearLeftMotor = new Spark(3);
-	public static SpeedController frontRightMotor = new Spark(1);
-	public static SpeedController rearRightMotor = new Spark(2);
+	public static SpeedController frontLeftMotor = new Spark(4); // SPARK
+	public static SpeedController rearLeftMotor = new Spark(3); // SPARK
+	public static SpeedController frontRightMotor = new Spark(1); // SPARK
+	public static SpeedController rearRightMotor = new Spark(2); // SPARK
 	
 	
 	
@@ -60,7 +53,7 @@ public class Robotmap {
 	
 	//////////////////// Winch ///////////////////////////////////////
 	
-	public static SpeedController winchMotor = new Spark(7);
+	//public static SpeedController winchMotor = new Spark(7);
 	
 	//Joystick Declaration
 	static Joystick driverJoystick = new Joystick(0);
@@ -73,4 +66,8 @@ public class Robotmap {
 	
 	public static Encoder lEncoder = new Encoder(0, 1, false, Encoder.EncodingType.k4X); ///Not sure that works
 	public static Encoder rEncoder = new Encoder(2, 3, false, Encoder.EncodingType.k4X); ///Not sure that works
+	public static Encoder liftEncoder = new Encoder(4, 5, false, Encoder.EncodingType.k4X);
+	
+	public static DigitalInput bottomPosition = new DigitalInput(6);
+	public static DigitalInput topPosition = new DigitalInput(7);
 }

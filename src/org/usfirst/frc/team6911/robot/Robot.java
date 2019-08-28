@@ -1,14 +1,6 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package org.usfirst.frc.team6911.robot;
 
 import org.usfirst.frc.team6911.robot.Driver.EncodersAverage;
-import org.usfirst.frc.team6911.robot.Robotmap.DriveMode;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
@@ -17,18 +9,11 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the IterativeRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the build.properties file in the
- * project.
- */
 public class Robot extends IterativeRobot {
 
-	  private Driver driver;
-	  private Lift lift;
-	  private Winch winch;
+	private Driver driver;
+	private Lift lift;
+	private Winch winch;
 	private SendableChooser<Integer> stationChooser = new SendableChooser<>();
 	private SendableChooser<String> switchORScaleChooser = new SendableChooser<>();
 	private SendableChooser<Boolean> openLooporClosedloop = new SendableChooser<>();
@@ -61,8 +46,8 @@ public class Robot extends IterativeRobot {
 		stationChooser.addObject("Station 3", 3);
 		SmartDashboard.putData("Select Station", stationChooser);
 
-		GamepadOrJoystickChooser.addDefault("GamePad", true);
-		GamepadOrJoystickChooser.addObject("Joystick", false);
+		GamepadOrJoystickChooser.addObject("GamePad", true);
+		GamepadOrJoystickChooser.addDefault("Joystick", false);
 		SmartDashboard.putData("Choose controller", GamepadOrJoystickChooser);
 
 		
@@ -137,8 +122,8 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		maxSpeed = maxSpeedChooser.getSelected();
 		driver.Drive(GamepadOrJoystick,maxSpeed);
-		lift.liftControl();
-		winch.WinchControl();
+		lift.liftControl(); // change to liftControl for lift class #1
+		//winch.WinchControl();
 		driver.Dashboard();
 		//driver.resetYaw();
 		///driver.resetencoder();

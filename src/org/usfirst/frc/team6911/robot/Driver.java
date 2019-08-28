@@ -2,7 +2,6 @@ package org.usfirst.frc.team6911.robot;
 
 import java.util.HashMap;
 
-import org.usfirst.frc.team6911.robot.Robotmap.DriveMode;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -28,7 +27,7 @@ public final class Driver implements PIDOutput {
 
 	////////////////// GYRO PID Coefficients////////////////
 	private static PIDController GyroPid;
-	private static double kP = 0.07;
+	private static double kP = 0.05;
 	private static double kI = 0.0;
 	private static double kD = 0.01;
 	private static boolean teleopStraight = false;
@@ -38,7 +37,7 @@ public final class Driver implements PIDOutput {
 	private static PIDController EncoderPid;
 	private static double ekP = 0.06;
 	private static double ekI = 0.0;
-	private static double ekD = 0.02;
+	private static double ekD = 0.005;
 
 	//////// PID output//////////////////
 	private static double kPdeviation;//// GyroPID
@@ -285,7 +284,7 @@ public final class Driver implements PIDOutput {
 
 		GyroPid = new PIDController(kP, kI, kD, Robotmap.ahrs, this);
 		GyroPid.setInputRange(-180.0, 180.0);
-		GyroPid.setOutputRange(-0.7, 0.7);
+		GyroPid.setOutputRange(-0.4, 0.4);
 		GyroPid.setAbsoluteTolerance(3.0f);
 		GyroPid.setContinuous(true);
 	}
@@ -412,9 +411,7 @@ public final class Driver implements PIDOutput {
 		} else {
 			Driver.arcadeDrive(0.0, -kPdeviation, false);
 			return goToNextStep = false;
-
 		}
-
 	}
 
 	public static void T() {
@@ -502,11 +499,9 @@ public final class Driver implements PIDOutput {
 	public static Boolean rollOut(double laps) {
 		if (!isRunning) {
 			timerss.start();
-		}
-
-		if (timerss.get() < laps) {
+		} if (timerss.get() < laps) {
 			isRunning = true;
-			Robotmap.inTakeMotor.set(-0.7);
+			Robotmap.inTakeMotor.set(0.3);
 			return goToNextStep = false;
 		} else {
 			Robotmap.inTakeMotor.set(0);
@@ -518,11 +513,9 @@ public final class Driver implements PIDOutput {
 	public static Boolean liftDown() {
 		if (!isRunning) {
 			timersss.start();
-		}
-
-		if (timersss.get() < 0.7) {
+		} if (timersss.get() < 1.5) {
 			isRunning = true;
-			Robotmap.liftMotor.set(0.4);
+			Robotmap.liftMotor.set(0.6);
 			return goToNextStep = false;
 
 		} else {
@@ -531,7 +524,6 @@ public final class Driver implements PIDOutput {
 			return goToNextStep = true;
 
 		}
-
 
 	}
 	////////////////// Handle autonomous Paths ////////////////////////////////////
@@ -552,6 +544,7 @@ public final class Driver implements PIDOutput {
 					Steps.put(3, false);
 					Steps.put(4, false);
 					Steps.put(5, false);
+					Steps.put(6, false);
 				} else if (gameData == 'R') {
 					Steps.put(0, true);
 				}
@@ -567,6 +560,7 @@ public final class Driver implements PIDOutput {
 					Steps.put(5, false);
 					Steps.put(6, false);
 					Steps.put(7, false);
+					Steps.put(8, false);
 				} else if (gameData == 'R') {
 					Steps.put(0, true);
 					Steps.put(1, false);
@@ -576,6 +570,7 @@ public final class Driver implements PIDOutput {
 					Steps.put(5, false);
 					Steps.put(6, false);
 					Steps.put(7, false);
+					Steps.put(8, false);
 
 				}
 
@@ -591,16 +586,15 @@ public final class Driver implements PIDOutput {
 					Steps.put(3, false);
 					Steps.put(4, false);
 					Steps.put(5, false);
+					Steps.put(6, false);
 				}
 			}
 		}
 
 		if (switchOrScale == "scale") {
-
 			gameData = GD.charAt(1);
 			mStation = S;
 			if (mStation == 1) {
-
 				if (gameData == 'L') {
 					Steps.put(0, true);
 					Steps.put(1, false);
@@ -609,7 +603,6 @@ public final class Driver implements PIDOutput {
 					Steps.put(4, false);
 					Steps.put(5, false);
 				} else if (gameData == 'R') {
-
 					if(gameData_2.charAt(0) == 'L') {
 						// PATH A11
 						Steps.put(0, true);
@@ -617,21 +610,17 @@ public final class Driver implements PIDOutput {
 						Steps.put(2, false);
 						Steps.put(3, false);
 						Steps.put(4, false);
-					}
-					else {
+					} else {
 						Steps.put(0, true);
 					}
-
-
-
 				}
 			}
 
 			if (mStation == 2) {
 				if (gameData == 'L') {
-
+					// no scale from center driver station
 				} else if (gameData == 'R') {
-
+					// no scale from center driver station
 				}
 
 			}
@@ -678,140 +667,97 @@ public final class Driver implements PIDOutput {
 
 	public static void Scheduler() {
 		if (switchOrScale == "switch") {
-
 			if (mStation == 1) {
-
 				if (gameData == 'L') {
 					/////// Path A11
 					if (Steps.get(0)) {
-					liftDown();
-					}
-					if (Steps.get(1)) {
+						DriveTo(10);
+					}if (Steps.get(1)) {
+						DriveTo(-10);
+					}if (Steps.get(2)) {
 						DriveTo(140);
-					}
-
-					if (Steps.get(2)) {
+					} if (Steps.get(3)) {
 						RotateTo(90.0);
-					}
-
-					if (Steps.get(3)) {
+					} if (Steps.get(4)) {
+						liftUp(3,-0.4);
+					} if (Steps.get(5)) {
 						DriveTo(15.6);
-					}
-					
-					if (Steps.get(4)) {
-						liftUp(2,-1);
-					}
-
-					if (Steps.get(5)) {
+					} if (Steps.get(6)) {
 						rollOut(2);
 					}
-
-				}
-
-				else {
+				} else {
                        /////// Path A12
 					if (Steps.get(0)) {
 						DriveTo(130);
 					}
 				}
-
-			}
-
-			if (mStation == 2) {
+			} if (mStation == 2) {
 				if (gameData == 'L') {
 					////// Path B11
-					
-					SmartDashboard.putBoolean("TEST", true);
 					if (Steps.get(0)) {
-						liftDown();
-						
-					}
-					if (Steps.get(1)) {
+						DriveTo(10);
+					}if (Steps.get(1)) {
+						DriveTo(-10);
+					}if (Steps.get(2)) {
 						DriveTo(26);
-					}
-					if (Steps.get(2)) {
+					} if (Steps.get(3)) {
 						RotateTo(-90);
-					}
-					if (Steps.get(3)) {
+					} if (Steps.get(4)) {
 						DriveTo(74);
-					}
-					if (Steps.get(4)) {
+					} if (Steps.get(5)) {
 						RotateTo(90);
-					}
-					if (Steps.get(5)) {
+					}if (Steps.get(6)) {
+						liftUp(3,-0.4);
+					} if (Steps.get(7)) {
 						DriveTo(62);
-					}
-					if (Steps.get(6)) {
-						liftUp(2,-1);
-					}
-
-					if (Steps.get(7)) {
+					} if (Steps.get(8)) {
 						rollOut(2);
-					}
-
+					} 
 				} else {
-
 					//////// Path B12
 					if (Steps.get(0)) {
-						liftDown();
-						
-					}
-					if (Steps.get(1)) {
+						DriveTo(10);
+					}if (Steps.get(1)) {
+						DriveTo(-10);
+					}if (Steps.get(2)) {
 						DriveTo(26);
-					}
-					if (Steps.get(2)) {
+					} if (Steps.get(3)) {
 						RotateTo(90);
-					}
-					if (Steps.get(3)) {
-						DriveTo(39);
-					}
-					if (Steps.get(4)) {
+					} if (Steps.get(4)) {
+						DriveTo(40);
+					} if (Steps.get(5)) {
 						RotateTo(-90);
-					}
-					if (Steps.get(5)) {
+					}if (Steps.get(6)) {
+						liftUp(3,-0.4);
+					} if (Steps.get(7)) {
 						DriveTo(62);
-					}
-					if (Steps.get(6)) {
-						liftUp(2,-1);
-					}
-
-					if (Steps.get(7)) {
+					} if (Steps.get(8)) {
 						rollOut(2);
 					}
-
 				}
-			}
-
-			if (mStation == 3) {
+			} if (mStation == 3) {
 				if (gameData == 'L') {
-					/// Path A31					
+					/// Path A30					
 					if (Steps.get(0)) {
 						//liftDown();
 						DriveTo(130);
 					}
-					
 				} else {
 					////// Path C12
+					
 					if (Steps.get(0)) {
-						liftDown();
-					}
-					if (Steps.get(1)) {
+						DriveTo(10);
+					}if (Steps.get(1)) {
+						DriveTo(-10);
+					}if (Steps.get(2)) {
 						DriveTo(140);
-					}
-
-					if (Steps.get(2)) {
+					} if (Steps.get(3)) {
 						RotateTo(-90.0);
-					}
-
-					if (Steps.get(3)) {
+					} if (Steps.get(4)) {
+						liftUp(3,-0.4);
+					} if (Steps.get(5)) {
 						DriveTo(15.6);
-					}
-
-					if (Steps.get(4)) {
-						liftUp(2,-1);
-					}
-
-					if (Steps.get(5)) {
+					} if (Steps.get(6)) {
 						rollOut(2);
 					}
 				}
@@ -820,111 +766,75 @@ public final class Driver implements PIDOutput {
 		}
 
 		if (switchOrScale == "scale") {
-
 			if (mStation == 1) {
-
 				if (gameData == 'L') {
 					// Path A21
 					if (Steps.get(0)) {
-						liftDown();
-					}
-					if (Steps.get(1)) {
-						DriveandLift(228,7,-1);
+						// liftDown();
+					} if (Steps.get(1)) {
+						DriveandLift(228,7,-0.3);
 					} if (Steps.get(2)) {
 						RotateTo(30);
 					} if (Steps.get(3)) {
 						DriveTo(24);
 					} if (Steps.get(5)) {
 						rollOut(2);
-						
 					}
-
-				}
-				else {
-
+				} else {
 					// PATH A22
 					if(gameData_2.charAt(0) == 'L') {
 						// PATH A11
 						if (Steps.get(0)) {
-							liftDown();
-							
-						}
-						if (Steps.get(1)) {
+							// liftDown();
+						} if (Steps.get(1)) {
 							DriveTo(140);
-						}
-
-						if (Steps.get(2)) {
+						} if (Steps.get(2)) {
 							RotateTo(90.0);
-						}
-
-						if (Steps.get(3)) {
+						} if (Steps.get(3)) {
 							DriveTo(15.6);
-						}
-
-						if (Steps.get(4)) {
+						} if (Steps.get(4)) {
 							rollOut(2);
-							
 						}
-
-					}
-					else {
+					} else {
 						if (Steps.get(0)) {
 							//liftDown();
 							DriveTo(130);
-						}					}
-
+						}					
+					}
 				}
-			}
-
-			if (mStation == 2) {
+			} if (mStation == 2) {
 				if (gameData == 'L') {
-
+					// never go to scale from center station
 				} else {
-
+					// never go to scale from center station
 				}
-			}
-
-			if (mStation == 3) {
+			} if (mStation == 3) {
 				if (gameData == 'L') {
 					// PATH C21
 					if(gameData_2.charAt(0) == 'R') {
 						// PATH A11
 						if (Steps.get(0)) {
-							liftDown();
-							
-						}
-						if (Steps.get(1)) {
+							// liftDown();
+						} if (Steps.get(1)) {
 							DriveTo(140);
-						}
-
-						if (Steps.get(2)) {
+						} if (Steps.get(2)) {
 							RotateTo(-90.0);
-						}
-
-						if (Steps.get(3)) {
+						} if (Steps.get(3)) {
 							DriveTo(15.6);
-						}
-
-						if (Steps.get(4)) {
+						} if (Steps.get(4)) {
 							rollOut(2);
-							
 						}
-
-					}
-					else {
+					} else {
 						if (Steps.get(0)) {
-							
 							DriveTo(130);
-						}					}
-				}
-				else {
+						}					
+					}
+				} else {
 					// PATH C22
 					if (Steps.get(0)) {
-						liftDown();
-						
-					}
-					if (Steps.get(1)) {
-						DriveandLift(228,7,-1);
+						// liftDown();
+					} if (Steps.get(1)) {
+						DriveandLift(228,7,-0.3);
 					} if (Steps.get(2)) {
 						RotateTo(-30);
 					} if (Steps.get(3)) {
@@ -935,14 +845,12 @@ public final class Driver implements PIDOutput {
 				}
 			}
 		}
-
 		StepPositionManager();
 	}
 
 	///////// This function act like a stabilizer it reset everything, and allow the
 	///////// PID to be balanced properly///////////////
 	public static void stabilizer() {
-
 		GyroPid.disable();
 		GyroPid.reset();
 		Robotmap.ahrs.zeroYaw();
@@ -959,11 +867,9 @@ public final class Driver implements PIDOutput {
 	}
 
 	public static void stabilizer2() {
-
 		stepPosition = 0;
 		Steps.clear();
 		Timer.delay(0.01);
-
 	}
 	
 	/*
@@ -994,9 +900,9 @@ public final class Driver implements PIDOutput {
 		// SmartDashboard.putNumber("Left Y AXIS", driverJoystick.getLeft_Y_AXIS());
 		// SmartDashboard.putNumber("Right X AXIS", driverJoystick.getRight_X_AXIS());
 		SmartDashboard.putNumber("YAW angle", Robotmap.ahrs.getYaw());
-		SmartDashboard.putBoolean("isConneted   ", Robotmap.ahrs.isConnected());
-		SmartDashboard.putBoolean("isMoving   ", Robotmap.ahrs.isMoving());
-		SmartDashboard.putBoolean("isRotating   ", Robotmap.ahrs.isRotating());
+		//SmartDashboard.putBoolean("isConneted   ", Robotmap.ahrs.isConnected());
+		//SmartDashboard.putBoolean("isMoving   ", Robotmap.ahrs.isMoving());
+		//SmartDashboard.putBoolean("isRotating   ", Robotmap.ahrs.isRotating());
 		SmartDashboard.putBoolean("onTarget   ", goToNextStep);
 
 		SmartDashboard.putNumber("Left encoder", Robotmap.lEncoder.get());
@@ -1013,9 +919,7 @@ public final class Driver implements PIDOutput {
 
 	///////// Disable the motors ////////////////////////////////////////
 	public void disablemotor() {
-
 		Driver.stopMotor();
-
 		Robotmap.liftMotor.set(0);
 	}
 }

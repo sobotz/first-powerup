@@ -95,5 +95,14 @@ public class OI {
 		rightBackButton = Joystick.getRawAxis(3);
 		return rightBackButton;
 	}
+	
+	
+	public boolean getPOV(int pov) {
+		boolean b = false;
+		if(Joystick.getPOV() == pov) {
+			b = true;
+		}
+		return b;
+	}
 
 }
