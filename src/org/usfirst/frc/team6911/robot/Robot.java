@@ -8,7 +8,6 @@
 package org.usfirst.frc.team6911.robot;
 
 import org.usfirst.frc.team6911.robot.Driver.EncodersAverage;
-import org.usfirst.frc.team6911.robot.Robotmap.DriveMode;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
@@ -26,9 +25,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends IterativeRobot {
 
-	  private Driver driver;
-	  private Lift lift;
-	  private Winch winch;
+	private Driver driver;
+	private Lift lift;
+	private Winch winch;
 	private SendableChooser<Integer> stationChooser = new SendableChooser<>();
 	private SendableChooser<String> switchORScaleChooser = new SendableChooser<>();
 	private SendableChooser<Boolean> openLooporClosedloop = new SendableChooser<>();
@@ -61,8 +60,8 @@ public class Robot extends IterativeRobot {
 		stationChooser.addObject("Station 3", 3);
 		SmartDashboard.putData("Select Station", stationChooser);
 
-		GamepadOrJoystickChooser.addDefault("GamePad", true);
-		GamepadOrJoystickChooser.addObject("Joystick", false);
+		GamepadOrJoystickChooser.addObject("GamePad", true);
+		GamepadOrJoystickChooser.addDefault("Joystick", false);
 		SmartDashboard.putData("Choose controller", GamepadOrJoystickChooser);
 
 		
@@ -137,8 +136,8 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		maxSpeed = maxSpeedChooser.getSelected();
 		driver.Drive(GamepadOrJoystick,maxSpeed);
-		lift.liftControl();
-		winch.WinchControl();
+		lift.liftControl(); // change to liftControl for lift class #1
+		//winch.WinchControl();
 		driver.Dashboard();
 		//driver.resetYaw();
 		///driver.resetencoder();
