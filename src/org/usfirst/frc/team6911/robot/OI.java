@@ -27,7 +27,7 @@ public class OI {
 	 * Object (normally Joystick Object are declared in the Class @RobotMap)
 	 */
 	public OI(Joystick joystick) {
-		Joystick = joystick;	
+		Joystick = joystick;
 	}
 
 	////// Return the value of Y axis on left side of the Joystick
