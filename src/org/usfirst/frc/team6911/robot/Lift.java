@@ -1,10 +1,12 @@
 package org.usfirst.frc.team6911.robot;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Lift {
 	private static OI liftController;
 	double down_speed = 0.25;
 	double up_speed = -0.6;
+
 	public Lift() {
 
 		driveTrainEncoders();
@@ -24,7 +26,7 @@ public class Lift {
 
 		Robotmap.inTakeMotor.set(liftController.getRight_Y_AXIS() * -1);
 
-		//SmartDashboard.putNumber("Encoder output", Robotmap.liftEncoder.get());
+		// SmartDashboard.putNumber("Encoder output", Robotmap.liftEncoder.get());
 		SmartDashboard.putBoolean("Direction", Robotmap.liftEncoder.getDirection());
 		SmartDashboard.putBoolean("DOWN SWITCH", Robotmap.bottomPosition.get());
 		SmartDashboard.putBoolean("UP SWITCH", Robotmap.topPosition.get());
@@ -60,14 +62,13 @@ public class Lift {
 
 		if (liftController.getLeftTopButton()) {
 			Robotmap.liftMotor.set(up_speed);
-		}
-		else if (liftController.getRightTopButton()) {
+		} else if (liftController.getRightTopButton()) {
 			Robotmap.liftMotor.set(down_speed);
 		}
 
 		if (!liftController.getLeftTopButton() && !liftController.getRightTopButton()) {
 
-			Robotmap.liftMotor.set( - 0.1);
+			Robotmap.liftMotor.set(-0.1);
 		}
 
 	}
