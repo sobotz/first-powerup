@@ -21,22 +21,20 @@ public class Robot extends IterativeRobot {
 	private SendableChooser<Boolean> GamepadOrJoystickChooser = new SendableChooser<>();
 	private int selectedStation;
 	private String switchORScale;
-	private Boolean  autoMethod;
+	private Boolean autoMethod;
 	private Boolean GamepadOrJoystick;
 	private Double maxSpeed;
 
-
-
 	/**
-	 * This function is run when the robot is first started up and should be
-	 * used for any initialization code.
+	 * This function is run when the robot is first started up and should be used
+	 * for any initialization code.
 	 */
 	@Override
 	public void robotInit() {
 		openLooporClosedloop.addDefault("Closed loop", true);
 		openLooporClosedloop.addObject("Open loop", false);
 		SmartDashboard.putData("Open or Closed loop", openLooporClosedloop);
-		
+
 		switchORScaleChooser.addDefault("Scale", "scale");
 		switchORScaleChooser.addObject("Switch", "switch");
 		SmartDashboard.putData("Switch or Scale", switchORScaleChooser);
@@ -50,26 +48,26 @@ public class Robot extends IterativeRobot {
 		GamepadOrJoystickChooser.addDefault("Joystick", false);
 		SmartDashboard.putData("Choose controller", GamepadOrJoystickChooser);
 
-		
 		maxSpeedChooser.addDefault("0.6", 0.8);
 		maxSpeedChooser.addObject("0.8", 0.8);
 		maxSpeedChooser.addObject("1", 1.0);
-		SmartDashboard.putData("Set MaxSpeed", maxSpeedChooser);		
+		SmartDashboard.putData("Set MaxSpeed", maxSpeedChooser);
 		driver = new Driver();
-	lift = new Lift();
-	winch = new Winch();
+		lift = new Lift();
+		winch = new Winch();
 	}
 
 	/**
 	 * This autonomous (along with the chooser code above) shows how to select
-	 * between different autonomous modes using the dashboard. The sendable
-	 * chooser code works with the Java SmartDashboard. If you prefer the
-	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-	 * getString line to get the auto name from the text box below the Gyro
+	 * between different autonomous modes using the dashboard. The sendable chooser
+	 * code works with the Java SmartDashboard. If you prefer the LabVIEW Dashboard,
+	 * remove all of the chooser code and uncomment the getString line to get the
+	 * auto name from the text box below the Gyro
 	 *
-	 * <p>You can add additional auto modes by adding additional comparisons to
-	 * the switch structure below with additional strings. If using the
-	 * SendableChooser make sure to add them to the chooser code above as well.
+	 * <p>
+	 * You can add additional auto modes by adding additional comparisons to the
+	 * switch structure below with additional strings. If using the SendableChooser
+	 * make sure to add them to the chooser code above as well.
 	 */
 	@SuppressWarnings("static-access")
 	@Override
@@ -77,15 +75,16 @@ public class Robot extends IterativeRobot {
 		selectedStation = stationChooser.getSelected();
 		switchORScale = switchORScaleChooser.getSelected();
 		autoMethod = openLooporClosedloop.getSelected();
-		if(autoMethod) {
+		if (autoMethod) {
 			driver.stabilizer();
 			driver.stabilizer2();
-			driver.StepsManager(switchORScale, DriverStation.getInstance().getGameSpecificMessage(),selectedStation,maxSpeedChooser.getSelected());
+			driver.StepsManager(switchORScale, DriverStation.getInstance().getGameSpecificMessage(), selectedStation,
+					maxSpeedChooser.getSelected());
 
-		}else {
+		} else {
 			driver.startTimer();
 		}
-		
+
 	}
 
 	/**
@@ -93,14 +92,12 @@ public class Robot extends IterativeRobot {
 	 */
 	@SuppressWarnings("static-access")
 	@Override
-	
-	
+
 	public void autonomousPeriodic() {
 
-		
-		if(autoMethod) {
+		if (autoMethod) {
 			driver.Scheduler();
-		}else {
+		} else {
 			driver.autonomousDrive();
 		}
 
@@ -121,12 +118,12 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		maxSpeed = maxSpeedChooser.getSelected();
-		driver.Drive(GamepadOrJoystick,maxSpeed);
+		driver.Drive(GamepadOrJoystick, maxSpeed);
 		lift.liftControl(); // change to liftControl for lift class #1
-		//winch.WinchControl();
+		// winch.WinchControl();
 		driver.Dashboard();
-		//driver.resetYaw();
-		///driver.resetencoder();
+		// driver.resetYaw();
+		/// driver.resetencoder();
 	}
 
 	/**
@@ -135,15 +132,6 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void testPeriodic() {
 
-
-
 	}
-
-
-
-
-
-
-
 
 }

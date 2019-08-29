@@ -19,7 +19,6 @@ public class Ntables {
 
 	}
 
-
 	public static double GyroPIDGains(String gain) {
 		double mGain = 0.0;
 		if (gain == "kP") {

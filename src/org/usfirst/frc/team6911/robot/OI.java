@@ -27,7 +27,7 @@ public class OI {
 	 * Object (normally Joystick Object are declared in the Class @RobotMap)
 	 */
 	public OI(Joystick joystick) {
-		Joystick = joystick;	
+		Joystick = joystick;
 	}
 
 	////// Return the value of Y axis on left side of the Joystick
@@ -95,11 +95,10 @@ public class OI {
 		rightBackButton = Joystick.getRawAxis(3);
 		return rightBackButton;
 	}
-	
-	
+
 	public boolean getPOV(int pov) {
 		boolean b = false;
-		if(Joystick.getPOV() == pov) {
+		if (Joystick.getPOV() == pov) {
 			b = true;
 		}
 		return b;
